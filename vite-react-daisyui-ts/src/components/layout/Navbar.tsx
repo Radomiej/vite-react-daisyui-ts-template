@@ -19,6 +19,9 @@ export const Navbar = () => {
         <div className="hidden md:flex flex-row gap-2">
           <Link to="/posts" className="btn btn-ghost flex items-center gap-2"><Palette className="w-4 h-4" />Posts</Link>
           <Link to="/demo" className="btn btn-ghost flex items-center gap-2"><Sun className="w-4 h-4" />Demo</Link>
+          <Link to="/markdown" className="btn btn-ghost flex items-center gap-2">
+            <span className="w-4 h-4 text-center">M↓</span> Markdown
+          </Link>
         </div>
       </div>
       <div className="flex-none">

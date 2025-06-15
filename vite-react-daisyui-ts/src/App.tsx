@@ -5,6 +5,7 @@ import { Footer } from './components/layout/Footer';
 import { HomePage } from './pages/HomePage';
 import { DemoPage } from './pages/DemoPage';
 import { PostsPage } from './pages/PostsPage';
+import { MarkdownPage } from './pages/MarkdownPage';
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/demo" element={<DemoPage />} />
               <Route path="/posts" element={<PostsPage />} />
+              <Route path="/markdown" element={<MarkdownPage />} />
             </Routes>
           </main>
           <Footer />
