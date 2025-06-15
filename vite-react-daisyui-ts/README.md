@@ -29,6 +29,7 @@ A modern React starter template with Vite, TypeScript, Tailwind CSS, and daisyUI
 - **State Management**: Redux Toolkit 2.2.1
 - **Linting**: ESLint 9.25.0
 - **Data Fetching**: @tanstack/react-query 5.80.7
+- **Data Visualization**: [Recharts](https://recharts.org/) 2.15.3 - A composable charting library built on React components
 - **Test frameworks**
   - **Vitest** (unit/integration): 3.2.3
   - **@testing-library/react**: 16.3.0
@@ -37,6 +38,24 @@ A modern React starter template with Vite, TypeScript, Tailwind CSS, and daisyUI
   - **jsdom**: 26.1.0
 
 ---
+
+## 📊 Data Visualization
+
+This project uses [Recharts](https://recharts.org/) for creating beautiful and interactive charts. The following chart components are included as examples:
+
+- **Line Charts**: For showing trends over time
+- **Bar Charts**: For comparing different categories
+- **Pie Charts**: For showing proportions of a whole
+
+All charts are fully responsive and interactive, with tooltips and legends for better data exploration.
+
+## 🙏 Acknowledgments
+
+- [Recharts](https://recharts.org/) - For providing a composable charting library for React
+- [daisyUI](https://daisyui.com/) - For the beautiful UI components and themes
+- [Tailwind CSS](https://tailwindcss.com/) - For the utility-first CSS framework
+- [Vite](https://vitejs.dev/) - For the fast build tooling
+- [React](https://react.dev/) - For the UI library
 
 ## Project Structure
 
