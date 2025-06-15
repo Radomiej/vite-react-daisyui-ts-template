@@ -34,29 +34,29 @@ module.exports = {
               marginTop: '1rem',
               marginBottom: '0.5rem',
             },
+            // Inline code styling
             code: {
-              backgroundColor: 'rgba(175, 184, 193, 0.2)',
-              padding: '0.2em 0.4em',
-              borderRadius: '0.25rem',
-              fontSize: '0.9em',
-            },
-            'code::before': {
-              content: 'none',
-            },
-            'code::after': {
-              content: 'none',
-            },
-            pre: {
-              backgroundColor: '#1e293b',
-              borderRadius: '0.5rem',
-              padding: '1rem',
-              overflowX: 'auto',
-              margin: '1rem 0',
-            },
-            'pre code': {
               backgroundColor: 'transparent',
               padding: 0,
-              borderRadius: 0,
+              border: 'none',
+              '&::before, &::after': {
+                content: 'none',
+              },
+            },
+            // Code block styling
+            'pre': {
+              backgroundColor: 'transparent',
+              borderRadius: '0.5rem',
+              padding: 0,
+              margin: 0,
+              overflowX: 'auto',
+              '> code': {
+                display: 'block',
+                padding: '1rem',
+                fontSize: '0.875rem',
+                lineHeight: '1.5',
+                fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+              },
             },
             a: {
               color: '#3b82f6',

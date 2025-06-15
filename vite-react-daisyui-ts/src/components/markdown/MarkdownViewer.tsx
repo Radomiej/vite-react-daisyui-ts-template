@@ -49,7 +49,17 @@ const CodeComponent: React.FC<CodeProps> = ({
   
   // Inline code
   return (
-    <code className={twMerge('px-1 py-0.5 rounded bg-gray-100 dark:bg-gray-800', className)} {...props}>
+    <code 
+      className={twMerge(
+        'px-1.5 py-0.5 rounded-md',
+        'bg-base-200/70 dark:bg-base-100/10',
+        'border border-base-300/50 dark:border-base-100/20',
+        'text-sm font-mono text-rose-600 dark:text-rose-400',
+        'break-words',
+        className
+      )} 
+      {...props}
+    >
       {children}
     </code>
   );
