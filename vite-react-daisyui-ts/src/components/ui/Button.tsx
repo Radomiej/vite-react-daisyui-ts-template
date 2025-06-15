@@ -1,4 +1,5 @@
-import type { ButtonHTMLAttributes, FC } from 'react';
+import type { ButtonHTMLAttributes, FC, ReactNode } from 'react';
+import { Loader2 } from 'lucide-react';
 
 type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'ghost' | 'link' | 'outline';
 type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
@@ -8,6 +9,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtonSize;
   loading?: boolean;
   fullWidth?: boolean;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
 }
 
 export const Button: FC<ButtonProps> = ({
@@ -18,6 +21,8 @@ export const Button: FC<ButtonProps> = ({
   loading = false,
   fullWidth = false,
   disabled = false,
+  leftIcon,
+  rightIcon,
   ...props
 }) => {
   const baseClasses = 'btn';
@@ -51,8 +56,18 @@ export const Button: FC<ButtonProps> = ({
       className={classes}
       disabled={disabled || loading}
       {...props}
+      type={props.type || 'button'}
     >
+      {loading && (
+        <Loader2 className="animate-spin mr-2 h-4 w-4" />
+      )}
+      {leftIcon && !loading && (
+        <span className="mr-2 flex items-center">{leftIcon}</span>
+      )}
       {children}
+      {rightIcon && !loading && (
+        <span className="ml-2 flex items-center">{rightIcon}</span>
+      )}
     </button>
   );
 };
