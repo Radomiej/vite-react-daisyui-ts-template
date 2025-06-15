@@ -1,5 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import mermaid from 'mermaid';
+
+// Initialize Mermaid with default configuration
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'default',
+  securityLevel: 'loose',
+  fontFamily: 'inherit',
+  flowchart: {
+    useMaxWidth: true,
+    htmlLabels: true,
+  },
+});
 
 interface MermaidRendererProps {
   chart: string;
@@ -10,24 +22,60 @@ export const MermaidRenderer = ({ chart }: MermaidRendererProps) => {
   const [error, setError] = useState('');
   const ref = useRef<HTMLDivElement>(null);
 
+  const renderMermaid = useCallback(async (chartToRender: string) => {
+    try {
+      const id = 'mermaid-' + Math.random().toString(36).substring(2, 8);
+      
+      // Parse and render the chart
+      const { svg } = await mermaid.render(id, chartToRender);
+      return svg;
+    } catch (err) {
+      console.error('Error rendering Mermaid diagram:', err);
+      throw err;
+    }
+  }, []);
+
   useEffect(() => {
     if (!chart) return;
+    
     let cancelled = false;
-    const renderMermaid = async () => {
+    
+    const processChart = async () => {
       try {
-        mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose', fontFamily: 'inherit' });
-        const { svg } = await mermaid.render('mermaid-diagram-' + Math.random().toString(36).substring(2, 8), chart);
-        if (!cancelled) setSvg(svg);
+        const result = await renderMermaid(chart);
+        if (!cancelled) {
+          setSvg(result);
+        }
       } catch (err) {
-        if (!cancelled) setError('Błąd renderowania diagramu');
+        if (!cancelled) {
+          setError('Error rendering diagram');
+        }
       }
     };
-    renderMermaid();
-    return () => { cancelled = true; };
-  }, [chart]);
+    
+    processChart();
+    
+    return () => {
+      cancelled = true;
+    };
+  }, [chart, renderMermaid]);
 
-  if (error) return <div className="text-error">{error}</div>;
-  return <div className="mermaid my-4" ref={ref} dangerouslySetInnerHTML={svg ? { __html: svg } : undefined}>{!svg && 'Rendering diagram...'}</div>;
+  if (error) return <div className="text-error p-4 rounded-lg bg-error/10">{error}</div>;
+  
+  // Use a ref to set the innerHTML after the component mounts/updates
+  useEffect(() => {
+    if (ref.current && svg) {
+      ref.current.innerHTML = svg;
+    }
+  }, [svg]);
+  
+  return (
+    <div className="mermaid-container my-6 w-full overflow-auto">
+      <div className="mermaid my-4 mx-auto" ref={ref}>
+        {!svg && 'Rendering diagram...'}
+      </div>
+    </div>
+  );
 };
 
 export default MermaidRenderer;

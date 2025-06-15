@@ -6,10 +6,38 @@ interface CodeBlockProps {
   value: string;
 }
 
-export const CodeBlock = ({ language, value }: CodeBlockProps) => (
-  <SyntaxHighlighter language={language} style={tomorrow} wrapLongLines customStyle={{ borderRadius: '0.5rem', fontSize: '0.95em', margin: 0 }}>
-    {value}
-  </SyntaxHighlighter>
-);
+export const CodeBlock: React.FC<CodeBlockProps> = ({ 
+  language = 'text', 
+  value 
+}) => {
+  return (
+    <div className="not-prose my-4 overflow-hidden rounded-lg bg-base-200 dark:bg-base-300">
+      <div className="flex items-center justify-between bg-base-300 px-4 py-2 text-sm">
+        <span className="font-mono text-sm text-base-content/70">
+          {language}
+        </span>
+      </div>
+      <div className="overflow-x-auto">
+        <SyntaxHighlighter 
+          language={language}
+          style={tomorrow}
+          wrapLongLines 
+          customStyle={{
+            margin: 0,
+            padding: '1rem',
+            background: 'transparent',
+            fontSize: '0.875rem',
+            lineHeight: '1.5',
+          }}
+          codeTagProps={{
+            className: 'font-mono',
+          }}
+        >
+          {value}
+        </SyntaxHighlighter>
+      </div>
+    </div>
+  );
+};
 
 export default CodeBlock;

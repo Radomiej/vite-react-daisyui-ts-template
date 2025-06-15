@@ -2,3 +2,57 @@
 @plugin "daisyui" {
   themes: all;
 }
+
+/* Mermaid diagram styles */
+.mermaid {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  margin: 1.5rem auto;
+  text-align: center;
+  max-width: 100%;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Dark mode support */
+.dark .mermaid {
+  --mermaid-bg-color: #1f2937;
+  --mermaid-edge-color: #9ca3af;
+  --mermaid-node-bg: #374151;
+  --mermaid-node-fg: #f3f4f6;
+  --mermaid-label-bg: #1f2937;
+  --mermaid-label-fg: #f3f4f6;
+  --mermaid-title-fg: #f3f4f6;
+}
+
+/* Container for better scrolling */
+.mermaid-container {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #9ca3af #e5e7eb;
+}
+
+.mermaid-container::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.mermaid-container::-webkit-scrollbar-track {
+  background: #e5e7eb;
+  border-radius: 4px;
+}
+
+.mermaid-container::-webkit-scrollbar-thumb {
+  background-color: #9ca3af;
+  border-radius: 4px;
+}
+
+.dark .mermaid-container::-webkit-scrollbar-track {
+  background: #374151;
+}
+
+.dark .mermaid-container::-webkit-scrollbar-thumb {
+  background-color: #4b5563;
+}
