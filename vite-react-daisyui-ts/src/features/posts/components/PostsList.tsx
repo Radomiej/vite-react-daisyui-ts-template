@@ -28,14 +28,14 @@ const PostsList = () => {
             d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <span>Błąd podczas ładowania postów</span>
+        <span>Error while loading posts</span>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold mb-6">Ostatnie posty</h2>
+      <h2 className="text-2xl font-bold mb-6">Latest posts</h2>
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {posts.slice(0, 6).map((post) => (

@@ -29,17 +29,16 @@ A modern React starter template with Vite, TypeScript, Tailwind CSS, and daisyUI
 - **State Management**: Redux Toolkit 2.2.1
 - **Linting**: ESLint 9.25.0
 - **Data Fetching**: @tanstack/react-query 5.80.7
-- **Test frameworks**:
-  - Vitest 3.2.3
-  - @testing-library/react 16.3.0
-  - @testing-library/jest-dom 6.6.3
-  - @testing-library/user-event 14.6.1
-  - jsdom 26.1.0
+- **Test frameworks**
+  - **Vitest** (unit/integration): 3.2.3
+  - **@testing-library/react**: 16.3.0
+  - **@testing-library/jest-dom**: 6.6.3
+  - **@testing-library/user-event**: 14.6.1
+  - **jsdom**: 26.1.0
 
 ---
 
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
@@ -64,21 +63,21 @@ src/
 └── utils/                 # Utility functions
 ```
 
-## 🛠 Using Redux
+## Using Redux
 
 This template comes with Redux Toolkit pre-configured with TypeScript support. Here's how to use it in your components:
 
 ---
 
-## 🦄 Wyłączanie konsoli Tango (React Query Devtools)
+## Disabling Tango Console (React Query Devtools)
 
-Aby wyłączyć konsolę Tango (React Query Devtools), usuń lub zakomentuj komponent `<ReactQueryDevtools />` w kodzie aplikacji. Możesz też warunkowo renderować devtools tylko w trybie deweloperskim:
+To disable the Tango Console (React Query Devtools), remove or comment out the `<ReactQueryDevtools />` component in your app code. You can also conditionally render devtools only in development mode:
 
 ```tsx
 {import.meta.env.DEV && <ReactQueryDevtools />}
 ```
 
-Jeśli nie chcesz dołączać devtools do buildu produkcyjnego, upewnij się, że kod z devtools nie trafia do bundle prod.
+If you don't want the devtools in your production bundle, ensure this code is excluded from production builds.
 
 ### Accessing State in Components
 
@@ -229,6 +228,24 @@ You can customize various aspects of your theme:
    ```bash
    yarn preview
    ```
+
+## 🧪 How to Test
+
+- **Run all tests once:**
+  ```bash
+  yarn test
+  ```
+- **Run tests in watch mode (auto-restart on file change):**
+  ```bash
+  yarn test:watch
+  ```
+- **Add new tests** in the `/src/components/.../__tests__/` or `/tests/` directory.
+- **Test files should cover:**
+  - at least 1 expected use case,
+  - 1 edge case,
+  - 1 failure case.
+- Use [Vitest](https://vitest.dev/) and [Testing Library](https://testing-library.com/) conventions.
+
 
 ## 🔧 ESLint Configuration
 
