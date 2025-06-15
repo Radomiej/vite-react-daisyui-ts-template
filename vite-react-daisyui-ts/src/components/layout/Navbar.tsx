@@ -22,6 +22,7 @@ export const Navbar = () => {
           <Link to="/markdown" className="btn btn-ghost flex items-center gap-2">
             <span className="w-4 h-4 text-center">M↓</span> Markdown
           </Link>
+          <Link to="/charts" className="btn btn-ghost flex items-center gap-2">📊 Charts</Link>
         </div>
       </div>
       <div className="flex-none">
@@ -51,6 +52,7 @@ export const Navbar = () => {
         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
           <li><Link to="/posts">Posts</Link></li>
           <li><Link to="/demo">Demo</Link></li>
+          <li><Link to="/charts">📊 Charts</Link></li>
         </ul>
       </div>
     </nav>

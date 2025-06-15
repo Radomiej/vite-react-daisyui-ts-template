@@ -6,6 +6,7 @@ import { HomePage } from './pages/HomePage';
 import { DemoPage } from './pages/DemoPage';
 import { PostsPage } from './pages/PostsPage';
 import { MarkdownPage } from './pages/MarkdownPage';
+import { ChartsPage } from './pages/ChartsPage';
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ function App() {
               <Route path="/demo" element={<DemoPage />} />
               <Route path="/posts" element={<PostsPage />} />
               <Route path="/markdown" element={<MarkdownPage />} />
+              <Route path="/charts" element={<ChartsPage />} />
             </Routes>
           </main>
           <Footer />
