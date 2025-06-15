@@ -29,6 +29,7 @@ trigger: always_on
 - **Use TypeScript** as the primary language.
 - **Use Flexbox, DaisyUI** as the primary style pattern.
 - **Always check @web https://daisyui.com/llms.txt** when making changes in DaisyUI.
+- **Use yarn** as the primary manager.
 
 ### 📚 Documentation & Explainability
 - **Update `README.md`** when new features are added, dependencies change, or setup steps are modified.

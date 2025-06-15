@@ -13,6 +13,7 @@ A modern React starter template with Vite, TypeScript, Tailwind CSS, and daisyUI
 - 🎨 30+ daisyUI themes included
 - 📱 Fully responsive design
 - 🔥 Hot Module Replacement (HMR)
+- 🔄 [Redux Toolkit](https://redux-toolkit.js.org/) - State management with TypeScript support
 
 ## 🛠️ Tech Stack
 
@@ -23,13 +24,16 @@ A modern React starter template with Vite, TypeScript, Tailwind CSS, and daisyUI
   - daisyUI 5.0.43
 - **Icons**: Lucide React 0.515.0
 - **Language**: TypeScript 5.8.3
+- **State Management**: Redux Toolkit 2.2.1
 - **Linting**: ESLint 9.25.0
 
 ## 📁 Project Structure
 
 ```
 src/
-├── app/                   # App configuration and routing
+├── app/                   # App configuration and store
+│   ├── hooks.ts           # Redux hooks with TypeScript types
+│   └── store.ts           # Redux store configuration
 ├── assets/                # Static assets (images, fonts, etc.)
 ├── components/
 │   └── ui/               # Reusable UI components
@@ -38,11 +42,78 @@ src/
 │       ├── Input.tsx      # Form input component
 │       └── Modal.tsx      # Modal dialog component
 ├── features/              # Feature-based modules
+│   └── counter/          # Example counter feature
+│       ├── Counter.tsx    # Counter component
+│       └── counterSlice.ts # Counter slice with reducers
 ├── hooks/                 # Custom React hooks
 │   └── useTheme.ts        # Theme management hook
 ├── styles/                # Global styles
 │   └── index.css          # Tailwind and daisyUI imports
 └── utils/                 # Utility functions
+```
+
+## 🛠 Using Redux
+
+This template comes with Redux Toolkit pre-configured with TypeScript support. Here's how to use it in your components:
+
+### Accessing State in Components
+
+```tsx
+import { useAppSelector } from './app/hooks';
+import type { RootState } from './app/store';
+
+function MyComponent() {
+  // Select data from the Redux store
+  const count = useAppSelector((state: RootState) => state.counter.value);
+  
+  return <div>Count: {count}</div>;
+}
+```
+
+### Dispatching Actions
+
+```tsx
+import { useAppDispatch } from './app/hooks';
+import { increment, decrement } from './features/counter/counterSlice';
+
+function CounterControls() {
+  const dispatch = useAppDispatch();
+  
+  return (
+    <div>
+      <button onClick={() => dispatch(increment())}>+</button>
+      <button onClick={() => dispatch(decrement())}>-</button>
+    </div>
+  );
+}
+```
+
+### Creating Slices
+
+Create a new feature slice using `createSlice`:
+
+```typescript
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { RootState } from '../../app/store';
+
+interface MyState {
+  // Define your state shape here
+}
+
+const initialState: MyState = {
+  // Initial state
+};
+
+export const mySlice = createSlice({
+  name: 'myFeature',
+  initialState,
+  reducers: {
+    // Define your reducers here
+  },
+});
+
+export const { /* exported actions */ } = mySlice.actions;
+export default mySlice.reducer;
 ```
 
 ## 🎨 Custom Themes

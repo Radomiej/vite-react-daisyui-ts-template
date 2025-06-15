@@ -5,6 +5,7 @@ import { Card } from './components/ui/Card';
 import { Input } from './components/ui/Input';
 import { Modal } from './components/ui/Modal';
 import { Search, Info, Mail, User, Lock } from 'lucide-react';
+import { Counter } from './features/counter';
 
 const THEMES = [
   "light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", 
@@ -158,6 +159,14 @@ function App() {
             <Button variant="outline" size="lg">View Documentation</Button>
           </div>
         </section>
+
+        {/* Counter */}
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex justify-center mb-8">
+            <Counter />
+          </div>
+        </div>
+
       </main>
 
       {/* Footer */}
