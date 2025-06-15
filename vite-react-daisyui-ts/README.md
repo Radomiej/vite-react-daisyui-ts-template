@@ -14,6 +14,8 @@ A modern React starter template with Vite, TypeScript, Tailwind CSS, and daisyUI
 - 📱 Fully responsive design
 - 🔥 Hot Module Replacement (HMR)
 - 🔄 [Redux Toolkit](https://redux-toolkit.js.org/) - State management with TypeScript support
+- 🦄 [@tanstack/react-query](https://tanstack.com/query/latest) – Data fetching & caching (v5.80.7)
+- 🧪 Test frameworks: Vitest, @testing-library/react, @testing-library/jest-dom, @testing-library/user-event, jsdom
 
 ## 🛠️ Tech Stack
 
@@ -26,6 +28,16 @@ A modern React starter template with Vite, TypeScript, Tailwind CSS, and daisyUI
 - **Language**: TypeScript 5.8.3
 - **State Management**: Redux Toolkit 2.2.1
 - **Linting**: ESLint 9.25.0
+- **Data Fetching**: @tanstack/react-query 5.80.7
+- **Test frameworks**:
+  - Vitest 3.2.3
+  - @testing-library/react 16.3.0
+  - @testing-library/jest-dom 6.6.3
+  - @testing-library/user-event 14.6.1
+  - jsdom 26.1.0
+
+---
+
 
 ## 📁 Project Structure
 
@@ -55,6 +67,18 @@ src/
 ## 🛠 Using Redux
 
 This template comes with Redux Toolkit pre-configured with TypeScript support. Here's how to use it in your components:
+
+---
+
+## 🦄 Wyłączanie konsoli Tango (React Query Devtools)
+
+Aby wyłączyć konsolę Tango (React Query Devtools), usuń lub zakomentuj komponent `<ReactQueryDevtools />` w kodzie aplikacji. Możesz też warunkowo renderować devtools tylko w trybie deweloperskim:
+
+```tsx
+{import.meta.env.DEV && <ReactQueryDevtools />}
+```
+
+Jeśli nie chcesz dołączać devtools do buildu produkcyjnego, upewnij się, że kod z devtools nie trafia do bundle prod.
 
 ### Accessing State in Components
 
@@ -186,12 +210,22 @@ You can customize various aspects of your theme:
    yarn dev
    ```
 
-3. **Build for production**
+3. **Run tests (single run)**
+   ```bash
+   yarn test
+   ```
+
+4. **Run tests in watch mode**
+   ```bash
+   yarn test:watch
+   ```
+
+5. **Build for production**
    ```bash
    yarn build
    ```
 
-4. **Preview production build**
+6. **Preview production build**
    ```bash
    yarn preview
    ```
@@ -214,3 +248,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Tailwind CSS](https://tailwindcss.com/)
 - [daisyUI](https://daisyui.com/)
 - [TypeScript](https://www.typescriptlang.org/)
+- [TanStack Query (React Query)](https://tanstack.com/query/latest)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
+- [Vitest](https://vitest.dev/)
+- [Testing Library](https://testing-library.com/)
+- [jsdom](https://github.com/jsdom/jsdom)
+- [Lucide Icons](https://lucide.dev/)

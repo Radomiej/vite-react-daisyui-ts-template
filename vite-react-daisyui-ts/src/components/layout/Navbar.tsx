@@ -13,7 +13,7 @@ export const Navbar = () => {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="navbar bg-base-100 shadow-lg sticky top-0 z-10">
+    <nav className="navbar bg-base-100 shadow-lg sticky top-0 z-10" role="navigation" aria-label="Main navigation">
       <div className="flex-1 flex items-center gap-4">
         <Link to="/" className="btn btn-ghost normal-case text-xl px-2 flex items-center gap-2"><Home className="w-5 h-5" />daisyUI Demo</Link>
         <div className="hidden md:flex flex-row gap-2">
@@ -50,6 +50,6 @@ export const Navbar = () => {
           <li><Link to="/demo">Demo</Link></li>
         </ul>
       </div>
-    </div>
+    </nav>
   );
 };

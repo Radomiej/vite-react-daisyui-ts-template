@@ -36,6 +36,7 @@ export const Card = ({
   return (
     <div 
       className={`card ${variantClass} ${borderClass} ${className}`}
+      data-testid="card"
     >
       {image && (
         <figure className={imageFull ? '!m-0' : 'px-4 pt-4'}>

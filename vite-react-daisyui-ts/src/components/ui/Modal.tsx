@@ -42,6 +42,7 @@ export const Modal = ({
         className="absolute inset-0 bg-black/50"
         onClick={closeOnBackdropClick ? onClose : undefined}
         aria-hidden="true"
+        data-testid="modal-overlay"
       />
       
       {/* Modal */}
