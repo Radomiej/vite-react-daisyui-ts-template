@@ -1,4 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
+
+import * as dndSortable from '@dnd-kit/sortable';
 import { DroppableContainer } from '../components/DroppableContainer';
 import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
@@ -7,201 +9,67 @@ import '@testing-library/jest-dom/vitest';
 vi.mock('@dnd-kit/core', async () => {
   const actual = await vi.importActual('@dnd-kit/core');
   return {
-    ...actual as any,
-    useDroppable: vi.fn().mockReturnValue({
+    ...actual,
+    useDroppable: () => ({
       setNodeRef: vi.fn(),
-      isOver: false,
-      active: null,
-      over: null,
-      rect: { current: { top: 0, left: 0, width: 100, height: 100 } }
     }),
   };
 });
 
-// Mock the SortableContext component
+// Mock the useSortable hook
 vi.mock('@dnd-kit/sortable', async () => {
   const actual = await vi.importActual('@dnd-kit/sortable');
   return {
-    ...actual as any,
-    SortableContext: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-    verticalListSortingStrategy: {},
+    ...actual,
+    useSortable: vi.fn().mockReturnValue({
+      attributes: { 'data-sortable-attr': 'true' },
+      listeners: { 'data-testid': 'sortable-listeners' },
+      setNodeRef: vi.fn(),
+      transform: null,
+      transition: null,
+    }),
   };
 });
 
-// Mock the SortableItem component
-vi.mock('../components/SortableItem', () => ({
-  SortableItem: ({ item, isActive }: any) => (
-    <div data-testid={`sortable-item-${item.id}`} data-is-active={isActive}>
-      {item.content}
-    </div>
-  ),
-}));
-
-describe('DroppableContainer Cross-Container Drag UX', () => {
-  it('renders correctly when dragging from another container', () => {
-    const container = {
-      id: 'in-progress',
-      title: 'In Progress',
-    };
-    
-    const items = [
-      {
-        id: 'task-3',
-        content: 'Design UI components',
-        containerId: 'in-progress',
-      },
-      {
-        id: 'task-4',
-        content: 'Implement authentication',
-        containerId: 'in-progress',
-      },
-    ];
-
+describe('DroppableContainer Sortable Behavior', () => {
+  it('calls useSortable with correct parameters for a regular container', () => {
     render(
-      <DroppableContainer 
-        container={container} 
-        items={items} 
-        activeId="task-1" 
-      />
+      <DroppableContainer id="container-1" title="Container 1">
+        <div />
+      </DroppableContainer>,
     );
 
-    // Check if the container is rendered correctly
-    expect(screen.getByTestId('droppable-container-in-progress')).toBeInTheDocument();
-    
-    // Check if all items are rendered
-    expect(screen.getByTestId('sortable-item-task-3')).toBeInTheDocument();
-    expect(screen.getByTestId('sortable-item-task-4')).toBeInTheDocument();
+    expect(dndSortable.useSortable).toHaveBeenCalledWith({
+      id: 'container-1',
+      data: {
+        type: 'Container',
+      },
+    });
   });
 
-  it('marks active item correctly when dragging', () => {
-    const container = {
-      id: 'todo',
-      title: 'To Do',
-    };
-    
-    const items = [
-      {
-        id: 'task-1',
-        content: 'Research project requirements',
-        containerId: 'todo',
-      },
-      {
-        id: 'task-2',
-        content: 'Create project structure',
-        containerId: 'todo',
-      },
-    ];
-
+  it('calls useSortable with correct parameters for a milestone', () => {
     render(
-      <DroppableContainer 
-        container={container} 
-        items={items} 
-        activeId="task-1" 
-      />
+      <DroppableContainer id="milestone-1" title="Milestone 1" isMilestone>
+        <div />
+      </DroppableContainer>,
     );
 
-    // Check if the active item is marked correctly
-    const activeItem = screen.getByTestId('sortable-item-task-1');
-    expect(activeItem.getAttribute('data-is-active')).toBe('true');
-    
-    // Check if the non-active item is not marked as active
-    const nonActiveItem = screen.getByTestId('sortable-item-task-2');
-    expect(nonActiveItem.getAttribute('data-is-active')).toBe('false');
+    expect(dndSortable.useSortable).toHaveBeenCalledWith({
+      id: 'milestone-1',
+      data: {
+        type: 'Milestone',
+      },
+    });
   });
 
-  it('renders empty container correctly when dragging', () => {
-    const container = {
-      id: 'done',
-      title: 'Done',
-    };
-    
-    const items: any[] = [];
-
-    render(
-      <DroppableContainer 
-        container={container} 
-        items={items} 
-        activeId="task-1" 
-      />
+  it('applies sortable attributes to the container', () => {
+    const { getByTestId } = render(
+      <DroppableContainer id="container-2" title="Container 2">
+        <div />
+      </DroppableContainer>,
     );
 
-    // Check if the empty container is rendered correctly
-    expect(screen.getByTestId('droppable-container-done')).toBeInTheDocument();
-    
-    // Check if the empty message is displayed
-    expect(screen.getByText('Drop items here')).toBeInTheDocument();
-  });
-
-  it('renders all items correctly when dragging within the same container', () => {
-    const container = {
-      id: 'todo',
-      title: 'To Do',
-    };
-    
-    const items = [
-      {
-        id: 'task-1',
-        content: 'Research project requirements',
-        containerId: 'todo',
-      },
-      {
-        id: 'task-2',
-        content: 'Create project structure',
-        containerId: 'todo',
-      },
-    ];
-
-    render(
-      <DroppableContainer 
-        container={container} 
-        items={items} 
-        activeId="task-1" 
-      />
-    );
-
-    // Check that all items are rendered
-    expect(screen.getByTestId('sortable-item-task-1')).toBeInTheDocument();
-    expect(screen.getByTestId('sortable-item-task-2')).toBeInTheDocument();
-    
-    // Check that the container title is rendered
-    expect(screen.getByText('To Do')).toBeInTheDocument();
-  });
-
-  it('renders correctly when not dragging', () => {
-    const container = {
-      id: 'todo',
-      title: 'To Do',
-    };
-    
-    const items = [
-      {
-        id: 'task-1',
-        content: 'Research project requirements',
-        containerId: 'todo',
-      },
-      {
-        id: 'task-2',
-        content: 'Create project structure',
-        containerId: 'todo',
-      },
-    ];
-
-    render(
-      <DroppableContainer 
-        container={container} 
-        items={items} 
-        activeId={null} 
-      />
-    );
-
-    // Check that all items are rendered
-    expect(screen.getByTestId('sortable-item-task-1')).toBeInTheDocument();
-    expect(screen.getByTestId('sortable-item-task-2')).toBeInTheDocument();
-    
-    // Check that no items are marked as active
-    const item1 = screen.getByTestId('sortable-item-task-1');
-    const item2 = screen.getByTestId('sortable-item-task-2');
-    expect(item1.getAttribute('data-is-active')).toBe('false');
-    expect(item2.getAttribute('data-is-active')).toBe('false');
+    const container = getByTestId('droppable-container-container-2');
+    expect(container).toHaveAttribute('data-sortable-attr', 'true');
   });
 });

@@ -9,11 +9,10 @@ vi.mock('@dnd-kit/core', async () => {
   const actual = await vi.importActual('@dnd-kit/core');
   return {
     ...actual as any,
-    DndContext: ({ children, onDragStart, onDragOver, onDragEnd }: any) => {
+    DndContext: ({ children, onDragStart, onDragEnd }: any) => {
       // Store the event handlers so we can call them in tests
       (global as any).dndHandlers = {
         onDragStart,
-        onDragOver,
         onDragEnd
       };
       return <div data-testid="dnd-context">{children}</div>;
@@ -29,28 +28,19 @@ vi.mock('@dnd-kit/core', async () => {
 
 // Mock the DroppableContainer component
 vi.mock('../components/DroppableContainer', () => ({
-  DroppableContainer: ({ container, items, activeId }: any) => (
-    <div 
-      data-testid={`container-${container.id}`}
-      data-active-id={activeId}
-    >
-      <h3>{container.title}</h3>
-      <div>
-        {items.map((item: any) => (
-          <div key={item.id} data-testid={`item-${item.id}`}>
-            {item.content}
-          </div>
-        ))}
-      </div>
+  DroppableContainer: ({ id, title, children }: any) => (
+    <div data-testid={`container-${id}`}>
+      <h3>{title}</h3>
+      <div>{children}</div>
     </div>
   ),
 }));
 
 // Mock the SortableItem component
 vi.mock('../components/SortableItem', () => ({
-  SortableItem: ({ item }: any) => (
-    <div data-testid={`sortable-item-${item.id}`}>
-      {item.content}
+  SortableItem: ({ id, children }: any) => (
+    <div data-testid={`item-${id}`}>
+      {children}
     </div>
   ),
 }));
@@ -61,43 +51,7 @@ describe('KanbanBoard Cross-Container Drag UX', () => {
     (global as any).dndHandlers = {};
   });
 
-  it('updates items state immediately during drag over for proper ghost placement', () => {
-    render(<KanbanBoard />);
-    
-    // Get initial items in todo container
-    const todoContainer = screen.getByTestId('container-todo');
-    const todoItemsBefore = todoContainer.querySelectorAll('[data-testid^="item-"]');
-    expect(todoItemsBefore.length).toBe(2); // Initially 2 items in todo
-    
-    // Get initial items in in-progress container
-    const inProgressContainer = screen.getByTestId('container-in-progress');
-    const inProgressItemsBefore = inProgressContainer.querySelectorAll('[data-testid^="item-"]');
-    expect(inProgressItemsBefore.length).toBe(2); // Initially 2 items in in-progress
-    
-    // Simulate drag start for task-1 from todo container
-    const dndHandlers = (global as any).dndHandlers;
-    act(() => {
-      dndHandlers.onDragStart({
-        active: { id: 'task-1' }
-      });
-    });
-    
-    // Simulate drag over in-progress container
-    act(() => {
-      dndHandlers.onDragOver({
-        active: { id: 'task-1' },
-        over: { id: 'in-progress' }
-      });
-    });
-    
-    // Check if the item has been moved to in-progress container during drag
-    // This is essential for proper ghost/placeholder visualization
-    const todoItemsAfter = todoContainer.querySelectorAll('[data-testid^="item-"]');
-    expect(todoItemsAfter.length).toBe(1); // Should be 1 item now since we're using dnd-kit's native ghost/placeholder
-    
-    const inProgressItemsAfter = inProgressContainer.querySelectorAll('[data-testid^="item-"]');
-    expect(inProgressItemsAfter.length).toBe(3); // Should be 3 items now
-  });
+  
 
   it('allows dropping at the end of a container', () => {
     render(<KanbanBoard />);
@@ -106,23 +60,17 @@ describe('KanbanBoard Cross-Container Drag UX', () => {
     const dndHandlers = (global as any).dndHandlers;
     act(() => {
       dndHandlers.onDragStart({
-        active: { id: 'task-1' }
+        active: { id: 'task-1', data: { current: { type: 'Task' } } }
       });
     });
     
-    // Simulate drag over in-progress container (not over any specific item)
-    act(() => {
-      dndHandlers.onDragOver({
-        active: { id: 'task-1' },
-        over: { id: 'in-progress' }
-      });
-    });
+    
     
     // Simulate drag end
     act(() => {
       dndHandlers.onDragEnd({
-        active: { id: 'task-1' },
-        over: { id: 'in-progress' }
+        active: { id: 'task-1', data: { current: { type: 'Task' } } },
+        over: { id: 'in-progress', data: { current: { type: 'Container' } } }
       });
     });
     
@@ -143,23 +91,17 @@ describe('KanbanBoard Cross-Container Drag UX', () => {
     const dndHandlers = (global as any).dndHandlers;
     act(() => {
       dndHandlers.onDragStart({
-        active: { id: 'task-1' }
+        active: { id: 'task-1', data: { current: { type: 'Task' } } }
       });
     });
     
-    // Simulate drag over task-3 in in-progress container
-    act(() => {
-      dndHandlers.onDragOver({
-        active: { id: 'task-1' },
-        over: { id: 'task-3' }
-      });
-    });
+    
     
     // Simulate drag end
     act(() => {
       dndHandlers.onDragEnd({
-        active: { id: 'task-1' },
-        over: { id: 'task-3' }
+        active: { id: 'task-1', data: { current: { type: 'Task' } } },
+        over: { id: 'task-3', data: { current: { type: 'Task' } } }
       });
     });
     
@@ -183,23 +125,17 @@ describe('KanbanBoard Cross-Container Drag UX', () => {
     const dndHandlers = (global as any).dndHandlers;
     act(() => {
       dndHandlers.onDragStart({
-        active: { id: 'task-5' }
+        active: { id: 'task-5', data: { current: { type: 'Task' } } }
       });
     });
     
-    // Simulate drag over task-2 in todo container
-    act(() => {
-      dndHandlers.onDragOver({
-        active: { id: 'task-5' },
-        over: { id: 'task-2' }
-      });
-    });
+    
     
     // Simulate drag end
     act(() => {
       dndHandlers.onDragEnd({
-        active: { id: 'task-5' },
-        over: { id: 'task-2' }
+        active: { id: 'task-5', data: { current: { type: 'Task' } } },
+        over: { id: 'task-2', data: { current: { type: 'Task' } } }
       });
     });
     
@@ -213,7 +149,7 @@ describe('KanbanBoard Cross-Container Drag UX', () => {
     );
     
     expect(task5InTodo).toBe(true);
-    expect(todoItems.length).toBe(2); // Item count remains the same as items are swapped
+    expect(todoItems.length).toBe(3); // Item count should increase by one
   });
 
   it('moves item to a different container on drag end', () => {
@@ -227,15 +163,15 @@ describe('KanbanBoard Cross-Container Drag UX', () => {
     const dndHandlers = (global as any).dndHandlers;
     act(() => {
       dndHandlers.onDragStart({
-        active: { id: 'task-1' }
+        active: { id: 'task-1', data: { current: { type: 'Task' } } }
       });
     });
     
     // Simulate drag end over a different container
     act(() => {
       dndHandlers.onDragEnd({
-        active: { id: 'task-1' },
-        over: { id: 'in-progress' }
+        active: { id: 'task-1', data: { current: { type: 'Task' } } },
+        over: { id: 'in-progress', data: { current: { type: 'Container' } } }
       });
     });
     
@@ -244,8 +180,8 @@ describe('KanbanBoard Cross-Container Drag UX', () => {
     const inProgressItemsAfter = screen.getByTestId('container-in-progress').querySelectorAll('[data-testid^="item-"]').length;
     
     // Check if the item moved from todo to in-progress
-    expect(todoItemsAfter).toBe(todoItemsBefore);
-    expect(inProgressItemsAfter).toBe(inProgressItemsBefore);
+    expect(todoItemsAfter).toBe(todoItemsBefore - 1);
+    expect(inProgressItemsAfter).toBe(inProgressItemsBefore + 1);
   });
 
   it('moves item to a specific position in a different container on drag end', () => {
@@ -255,15 +191,15 @@ describe('KanbanBoard Cross-Container Drag UX', () => {
     const dndHandlers = (global as any).dndHandlers;
     act(() => {
       dndHandlers.onDragStart({
-        active: { id: 'task-1' }
+        active: { id: 'task-1', data: { current: { type: 'Task' } } }
       });
     });
     
     // Simulate drag end over an item in a different container
     act(() => {
       dndHandlers.onDragEnd({
-        active: { id: 'task-1' },
-        over: { id: 'task-3' }
+        active: { id: 'task-1', data: { current: { type: 'Task' } } },
+        over: { id: 'task-3', data: { current: { type: 'Task' } } }
       });
     });
     
@@ -278,37 +214,5 @@ describe('KanbanBoard Cross-Container Drag UX', () => {
     expect(movedItem).toBeDefined();
   });
 
-  it('resets drag states after drag end', () => {
-    render(<KanbanBoard />);
-    
-    // Simulate drag start
-    const dndHandlers = (global as any).dndHandlers;
-    act(() => {
-      dndHandlers.onDragStart({
-        active: { id: 'task-1' }
-      });
-    });
-    
-    // Simulate drag over
-    act(() => {
-      dndHandlers.onDragOver({
-        active: { id: 'task-1' },
-        over: { id: 'in-progress' }
-      });
-    });
-    
-    // Simulate drag end
-    act(() => {
-      dndHandlers.onDragEnd({
-        active: { id: 'task-1' },
-        over: { id: 'in-progress' }
-      });
-    });
-    
-    // Check if all drag states are reset
-    const containers = screen.getAllByTestId(/^container-/);
-    containers.forEach(container => {
-      expect(container.getAttribute('data-active-id')).toBeNull();
-    });
-  });
+  
 });

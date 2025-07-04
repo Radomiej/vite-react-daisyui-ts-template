@@ -1,52 +1,70 @@
 import { useDroppable } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import type { KanbanContainer, KanbanItem } from '../types';
-import { SortableItem } from './SortableItem';
+import { useSortable } from '@dnd-kit/sortable';
+import React from 'react';
 
 interface DroppableContainerProps {
-  container: KanbanContainer;
-  items: KanbanItem[];
-  activeId: string | null;
+  id: string;
+  title: string;
+  children: React.ReactNode;
+  isMilestone?: boolean;
+  isOverlay?: boolean;
 }
 
-export function DroppableContainer({ 
-  container, 
-  items, 
-  activeId 
+export function DroppableContainer({
+  id,
+  title,
+  children,
+  isMilestone,
+  isOverlay,
 }: DroppableContainerProps) {
-  const { setNodeRef } = useDroppable({
-    id: container.id,
+  const { setNodeRef: droppableSetNodeRef, isOver } = useDroppable({
+    id,
+    data: {
+      type: isMilestone ? 'Milestone' : 'Container',
+    },
   });
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef: sortableSetNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id,
+    data: {
+      type: isMilestone ? 'Milestone' : 'Container',
+    },
+  });
+
+  const style = {
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+  };
+
+  const containerClasses = `
+    flex flex-col rounded-box shadow-md 
+    ${isMilestone ? 'bg-base-300 w-auto p-6' : 'bg-base-200 w-80 p-4'}
+    ${isOverlay ? 'ring-2 ring-primary' : ''}
+    ${isOver ? 'ring-2 ring-secondary' : ''}
+  `;
+
   return (
-    <div 
-      ref={setNodeRef}
-      className="card bg-base-200 w-72 p-4 flex-shrink-0"
-      data-testid={`droppable-container-${container.id}`}
+    <div
+      ref={sortableSetNodeRef}
+      style={style}
+      className={containerClasses}
+      data-testid={`droppable-container-${id}`}
+      {...attributes}
     >
-      <div className="card-title mb-4 text-lg font-bold">
-        {container.title}
+      <h2 {...listeners} className="text-lg font-bold mb-4 cursor-grab">
+        {title}
+      </h2>
+      <div ref={droppableSetNodeRef} className="flex flex-col gap-2 flex-grow min-h-[100px]">
+        {children}
       </div>
-      <SortableContext 
-        items={items.map(item => item.id)} 
-        strategy={verticalListSortingStrategy}
-      >
-        <div className="flex flex-col gap-2">
-          {items.length === 0 && (
-            <div className="text-sm text-base-content/50 p-4 text-center">
-              Drop items here
-            </div>
-          )}
-          {items.map((item) => (
-            <SortableItem 
-              key={item.id} 
-              item={item} 
-              isActive={activeId === item.id}
-              disabled={activeId !== null && activeId !== item.id}
-            />
-          ))}
-        </div>
-      </SortableContext>
     </div>
   );
 }

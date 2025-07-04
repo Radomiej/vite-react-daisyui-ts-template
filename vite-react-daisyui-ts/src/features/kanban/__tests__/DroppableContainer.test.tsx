@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { DroppableContainer } from '../components/DroppableContainer';
 import { describe, it, expect, vi } from 'vitest';
 import * as dndCore from '@dnd-kit/core';
-import * as dndSortable from '@dnd-kit/sortable';
+
 import '@testing-library/jest-dom/vitest';
 
 // Mock the useDroppable hook
@@ -21,127 +21,70 @@ vi.mock('@dnd-kit/sortable', async () => {
   const actual = await vi.importActual('@dnd-kit/sortable');
   return {
     ...actual,
-    SortableContext: ({ children }: { children: React.ReactNode }) => <div data-testid="sortable-context">{children}</div>,
+    useSortable: () => ({
+      attributes: {},
+      listeners: {},
+      setNodeRef: vi.fn(),
+      transform: null,
+      transition: null,
+    }),
   };
 });
 
-// Mock the SortableItem component
-vi.mock('../components/SortableItem', () => ({
-  SortableItem: ({ item }: { item: { id: string; content: string; containerId: string } }) => (
-    <div data-testid={`sortable-item-${item.id}`}>{item.content}</div>
-  ),
-}));
-
 describe('DroppableContainer', () => {
   it('renders the container title', () => {
-    const container = {
-      id: 'todo',
-      title: 'To Do',
-    };
-    
-    const items = [
-      { id: 'task-1', content: 'Task 1', containerId: 'todo' },
-      { id: 'task-2', content: 'Task 2', containerId: 'todo' },
-    ];
-
     render(
-      <DroppableContainer
-        container={container}
-        items={items}
-        activeId={null}
-      />
+      <DroppableContainer id="todo" title="To Do">
+        <div>Child</div>
+      </DroppableContainer>,
     );
-    expect(screen.getByText('To Do')).toBeDefined();
+    expect(screen.getByText('To Do')).toBeInTheDocument();
   });
 
-  it('renders items within the container', () => {
-    const container = {
-      id: 'in-progress',
-      title: 'In Progress',
-    };
-    
-    const items = [
-      { id: 'task-3', content: 'Task 3', containerId: 'in-progress' },
-      { id: 'task-4', content: 'Task 4', containerId: 'in-progress' },
-    ];
-
+  it('renders children within the container', () => {
     render(
-      <DroppableContainer
-        container={container}
-        items={items}
-        activeId={null}
-      />
+      <DroppableContainer id="in-progress" title="In Progress">
+        <div data-testid="child-1">Child 1</div>
+        <div data-testid="child-2">Child 2</div>
+      </DroppableContainer>,
     );
-    expect(screen.getByTestId('sortable-item-task-3')).toBeDefined();
-    expect(screen.getByTestId('sortable-item-task-4')).toBeDefined();
-  });
-
-  it('displays a placeholder when no items are present', () => {
-    const container = {
-      id: 'done',
-      title: 'Done',
-    };
-    
-    const items: any[] = [];
-
-    render(
-      <DroppableContainer
-        container={container}
-        items={items}
-        activeId={null}
-      />
-    );
-    expect(screen.getByText('Drop items here')).toBeDefined();
+    expect(screen.getByTestId('child-1')).toBeInTheDocument();
+    expect(screen.getByTestId('child-2')).toBeInTheDocument();
   });
 
   it('uses the useDroppable hook with the correct id', () => {
     const spy = vi.spyOn(dndCore, 'useDroppable');
-    
-    const container = {
-      id: 'test-container',
-      title: 'Test Container',
-    };
-    
-    const items: any[] = [];
 
     render(
-      <DroppableContainer
-        container={container}
-        items={items}
-        activeId={null}
-      />
+      <DroppableContainer id="test-container" title="Test Container">
+        <div>Child</div>
+      </DroppableContainer>,
     );
-    
-    expect(spy).toHaveBeenCalledWith({ id: 'test-container' });
+
+    expect(spy).toHaveBeenCalledWith({ id: 'test-container', data: { type: 'Container' } });
     spy.mockRestore();
   });
 
-  it('passes the correct items to SortableContext', () => {
-    const spy = vi.spyOn(dndSortable, 'SortableContext');
-    
-    const container = {
-      id: 'test-container-2',
-      title: 'Test Container 2',
-    };
-    
-    const items = [
-      { id: 'task-5', content: 'Task 5', containerId: 'test-container-2' },
-      { id: 'task-6', content: 'Task 6', containerId: 'test-container-2' },
-    ];
-
-    render(
-      <DroppableContainer
-        container={container}
-        items={items}
-        activeId={null}
-      />
+  it('applies default container styling', () => {
+    const { getByTestId } = render(
+      <DroppableContainer id="default" title="Default">
+        <div />
+      </DroppableContainer>,
     );
-    
-    expect(spy).toHaveBeenCalled();
-    const callArgs = spy.mock.calls[0][0];
-    expect(callArgs.items).toEqual(['task-5', 'task-6']);
-    expect(typeof callArgs.strategy).toBe('function');
-    
-    spy.mockRestore();
+    const container = getByTestId('droppable-container-default');
+    expect(container.className).toContain('bg-base-200');
+    expect(container.className).toContain('p-4');
+    expect(container.className).toContain('rounded-box');
+  });
+
+  it('applies milestone styling when isMilestone is true', () => {
+    const { getByTestId } = render(
+      <DroppableContainer id="milestone" title="Milestone" isMilestone>
+        <div />
+      </DroppableContainer>,
+    );
+    const container = getByTestId('droppable-container-milestone');
+    expect(container.className).toContain('bg-base-300');
+    expect(container.className).toContain('p-6');
   });
 });

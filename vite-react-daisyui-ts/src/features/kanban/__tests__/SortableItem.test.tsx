@@ -21,45 +21,36 @@ vi.mock('@dnd-kit/sortable', async () => {
 
 describe('SortableItem', () => {
   it('renders the item content', () => {
-    const item = {
-      id: 'test-1',
-      content: 'Test Item',
-      containerId: 'todo',
-    };
+    const id = 'test-1';
+    const content = 'Test Item';
 
-    render(<SortableItem item={item} />);
-    expect(screen.getByText('Test Item')).toBeDefined();
+    render(<SortableItem id={id}>{content}</SortableItem>);
+    expect(screen.getByText(content)).toBeInTheDocument();
   });
 
   it('applies the correct styling', () => {
-    const item = {
-      id: 'test-2',
-      content: 'Another Test Item',
-      containerId: 'in-progress',
-    };
+    const id = 'test-2';
+    const content = 'Another Test Item';
 
-    const { container } = render(<SortableItem item={item} />);
+    const { container } = render(<SortableItem id={id}>{content}</SortableItem>);
     const itemElement = container.firstChild as HTMLElement;
-    
+
     // Check if the item has the correct classes
     expect(itemElement.className).toContain('card');
     expect(itemElement.className).toContain('bg-base-100');
     expect(itemElement.className).toContain('shadow-md');
-    expect(itemElement.className).toContain('cursor-move');
+    expect(itemElement.className).toContain('cursor-grab');
   });
 
   it('uses the useSortable hook with the correct id', () => {
     const spy = vi.spyOn(sortable, 'useSortable');
-    
-    const item = {
-      id: 'test-3',
-      content: 'Spy Test Item',
-      containerId: 'done',
-    };
 
-    render(<SortableItem item={item} />);
-    
-    expect(spy).toHaveBeenCalledWith({ id: 'test-3', disabled: false });
+    const id = 'test-3';
+    const content = 'Spy Test Item';
+
+    render(<SortableItem id={id}>{content}</SortableItem>);
+
+    expect(spy).toHaveBeenCalledWith({ id: 'test-3', data: { type: 'Task' } });
     spy.mockRestore();
   });
 });

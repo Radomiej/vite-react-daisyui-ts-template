@@ -31,11 +31,11 @@ describe('KanbanBoard', () => {
     const { container } = render(<KanbanBoard />);
     
     // Check if the board has the correct structure
-    const columns = container.querySelectorAll('.card.bg-base-200');
+    const columns = container.querySelectorAll('.bg-base-200');
     expect(columns.length).toBe(3);
     
     // Check if there are tasks in the columns
-    const tasks = container.querySelectorAll('.card.bg-base-100');
+    const tasks = container.querySelectorAll('.bg-base-100');
     expect(tasks.length).toBe(5);
   });
 });

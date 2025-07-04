@@ -1,14 +1,12 @@
 import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import type { KanbanItem } from '../types';
 
 interface SortableItemProps {
-  item: KanbanItem;
-  isActive?: boolean;
-  disabled?: boolean;
+  id: string;
+  children: React.ReactNode;
+  isOverlay?: boolean;
 }
 
-export function SortableItem({ item, isActive = false, disabled = false }: SortableItemProps) {
+export function SortableItem({ id, children, isOverlay }: SortableItemProps) {
   const {
     attributes,
     listeners,
@@ -16,27 +14,22 @@ export function SortableItem({ item, isActive = false, disabled = false }: Sorta
     transform,
     transition,
     isDragging,
-  } = useSortable({ 
-    id: item.id,
-    disabled
+  } = useSortable({
+    id,
+    data: {
+      type: 'Task',
+    },
   });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
     transition,
-    opacity: isDragging ? 0.5 : 1, // Make the original item semi-transparent when dragging
+    opacity: isDragging ? 0.5 : 1,
   };
 
-  // Apply different styles based on the item's state
-  const cardClasses = [
-    'card',
-    isDragging ? 'bg-base-300' : isActive ? 'bg-base-200' : 'bg-base-100',
-    'shadow-md',
-    'mb-3',
-    disabled ? 'cursor-default' : 'cursor-move',
-    // Add a placeholder class when the item is being dragged
-    isDragging ? 'border-2 border-dashed border-primary' : '',
-  ].filter(Boolean).join(' ');
+  const itemClasses = isOverlay
+    ? `card p-4 bg-primary text-primary-content rounded-box shadow-lg cursor-grabbing`
+    : `card p-4 bg-base-100 rounded-box shadow-md cursor-grab`;
 
   return (
     <div
@@ -44,14 +37,10 @@ export function SortableItem({ item, isActive = false, disabled = false }: Sorta
       style={style}
       {...attributes}
       {...listeners}
-      className={cardClasses}
-      data-testid={`sortable-item-${item.id}`}
-      data-is-dragging={isDragging || undefined}
-      data-is-disabled={disabled || undefined}
+      className={itemClasses}
+      data-testid={`sortable-item-${id}`}
     >
-      <div className="card-body p-4">
-        <p className="text-sm">{item.content}</p>
-      </div>
+      {children}
     </div>
   );
 }
