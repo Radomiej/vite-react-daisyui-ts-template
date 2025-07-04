@@ -59,7 +59,7 @@ describe('SortableItem', () => {
 
     render(<SortableItem item={item} />);
     
-    expect(spy).toHaveBeenCalledWith({ id: 'test-3' });
+    expect(spy).toHaveBeenCalledWith({ id: 'test-3', disabled: false });
     spy.mockRestore();
   });
 });

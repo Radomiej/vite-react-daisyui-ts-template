@@ -44,7 +44,13 @@ describe('DroppableContainer', () => {
       { id: 'task-2', content: 'Task 2', containerId: 'todo' },
     ];
 
-    render(<DroppableContainer container={container} items={items} />);
+    render(
+      <DroppableContainer
+        container={container}
+        items={items}
+        activeId={null}
+      />
+    );
     expect(screen.getByText('To Do')).toBeDefined();
   });
 
@@ -59,7 +65,13 @@ describe('DroppableContainer', () => {
       { id: 'task-4', content: 'Task 4', containerId: 'in-progress' },
     ];
 
-    render(<DroppableContainer container={container} items={items} />);
+    render(
+      <DroppableContainer
+        container={container}
+        items={items}
+        activeId={null}
+      />
+    );
     expect(screen.getByTestId('sortable-item-task-3')).toBeDefined();
     expect(screen.getByTestId('sortable-item-task-4')).toBeDefined();
   });
@@ -72,7 +84,13 @@ describe('DroppableContainer', () => {
     
     const items: any[] = [];
 
-    render(<DroppableContainer container={container} items={items} />);
+    render(
+      <DroppableContainer
+        container={container}
+        items={items}
+        activeId={null}
+      />
+    );
     expect(screen.getByText('Drop items here')).toBeDefined();
   });
 
@@ -86,7 +104,13 @@ describe('DroppableContainer', () => {
     
     const items: any[] = [];
 
-    render(<DroppableContainer container={container} items={items} />);
+    render(
+      <DroppableContainer
+        container={container}
+        items={items}
+        activeId={null}
+      />
+    );
     
     expect(spy).toHaveBeenCalledWith({ id: 'test-container' });
     spy.mockRestore();
@@ -105,7 +129,13 @@ describe('DroppableContainer', () => {
       { id: 'task-6', content: 'Task 6', containerId: 'test-container-2' },
     ];
 
-    render(<DroppableContainer container={container} items={items} />);
+    render(
+      <DroppableContainer
+        container={container}
+        items={items}
+        activeId={null}
+      />
+    );
     
     expect(spy).toHaveBeenCalled();
     const callArgs = spy.mock.calls[0][0];
