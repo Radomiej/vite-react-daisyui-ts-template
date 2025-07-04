@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { SortableItem } from '../components/SortableItem';
 import { describe, it, expect, vi } from 'vitest';
 import * as sortable from '@dnd-kit/sortable';
+import '@testing-library/jest-dom/vitest';
 
 // Mock the useSortable hook
 vi.mock('@dnd-kit/sortable', async () => {
@@ -27,7 +28,7 @@ describe('SortableItem', () => {
     };
 
     render(<SortableItem item={item} />);
-    expect(screen.getByText('Test Item')).toBeInTheDocument();
+    expect(screen.getByText('Test Item')).toBeDefined();
   });
 
   it('applies the correct styling', () => {
@@ -38,13 +39,13 @@ describe('SortableItem', () => {
     };
 
     const { container } = render(<SortableItem item={item} />);
-    const itemElement = container.firstChild;
+    const itemElement = container.firstChild as HTMLElement;
     
     // Check if the item has the correct classes
-    expect(itemElement).toHaveClass('card');
-    expect(itemElement).toHaveClass('bg-base-100');
-    expect(itemElement).toHaveClass('shadow-md');
-    expect(itemElement).toHaveClass('cursor-move');
+    expect(itemElement.className).toContain('card');
+    expect(itemElement.className).toContain('bg-base-100');
+    expect(itemElement.className).toContain('shadow-md');
+    expect(itemElement.className).toContain('cursor-move');
   });
 
   it('uses the useSortable hook with the correct id', () => {

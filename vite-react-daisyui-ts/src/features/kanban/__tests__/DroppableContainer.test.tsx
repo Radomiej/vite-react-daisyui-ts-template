@@ -3,6 +3,7 @@ import { DroppableContainer } from '../components/DroppableContainer';
 import { describe, it, expect, vi } from 'vitest';
 import * as dndCore from '@dnd-kit/core';
 import * as dndSortable from '@dnd-kit/sortable';
+import '@testing-library/jest-dom/vitest';
 
 // Mock the useDroppable hook
 vi.mock('@dnd-kit/core', async () => {
@@ -44,7 +45,7 @@ describe('DroppableContainer', () => {
     ];
 
     render(<DroppableContainer container={container} items={items} />);
-    expect(screen.getByText('To Do')).toBeInTheDocument();
+    expect(screen.getByText('To Do')).toBeDefined();
   });
 
   it('renders items within the container', () => {
@@ -59,8 +60,8 @@ describe('DroppableContainer', () => {
     ];
 
     render(<DroppableContainer container={container} items={items} />);
-    expect(screen.getByTestId('sortable-item-task-3')).toBeInTheDocument();
-    expect(screen.getByTestId('sortable-item-task-4')).toBeInTheDocument();
+    expect(screen.getByTestId('sortable-item-task-3')).toBeDefined();
+    expect(screen.getByTestId('sortable-item-task-4')).toBeDefined();
   });
 
   it('displays a placeholder when no items are present', () => {
@@ -72,7 +73,7 @@ describe('DroppableContainer', () => {
     const items: any[] = [];
 
     render(<DroppableContainer container={container} items={items} />);
-    expect(screen.getByText('Drop items here')).toBeInTheDocument();
+    expect(screen.getByText('Drop items here')).toBeDefined();
   });
 
   it('uses the useDroppable hook with the correct id', () => {
@@ -106,13 +107,10 @@ describe('DroppableContainer', () => {
 
     render(<DroppableContainer container={container} items={items} />);
     
-    expect(spy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        items: ['task-5', 'task-6'],
-        strategy: expect.any(Function),
-      }),
-      expect.anything()
-    );
+    expect(spy).toHaveBeenCalled();
+    const callArgs = spy.mock.calls[0][0];
+    expect(callArgs.items).toEqual(['task-5', 'task-6']);
+    expect(typeof callArgs.strategy).toBe('function');
     
     spy.mockRestore();
   });
