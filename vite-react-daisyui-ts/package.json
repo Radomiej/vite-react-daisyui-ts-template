@@ -12,6 +12,7 @@
     "test:watch": "vitest --environment jsdom"
   },
   "dependencies": {
+    "@dagrejs/dagre": "^1.1.5",
     "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/vite": "^4.1.10",
     "@tanstack/react-query": "^5.80.7",
@@ -20,7 +21,10 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/recharts": "^2.0.1",
     "axios": "^1.10.0",
+    "d3-force": "^3.0.0",
+    "d3-hierarchy": "^3.1.2",
     "daisyui": "^5.0.43",
+    "elkjs": "^0.10.0",
     "lucide-react": "^0.515.0",
     "mermaid": "^11.6.0",
     "react": "^19.1.0",
@@ -44,6 +48,9 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/d3-force": "^3.0.10",
+    "@types/d3-hierarchy": "^3.1.7",
+    "@types/dagre": "^0.7.52",
     "@types/node": "^24.0.1",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",

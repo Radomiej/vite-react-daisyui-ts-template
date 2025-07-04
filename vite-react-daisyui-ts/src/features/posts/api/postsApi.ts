@@ -19,20 +19,4 @@ export const postsApi = {
     const { data } = await api.get<Post>(`/posts/${id}`);
     return data;
   },
-
-  // Dodaj nowy post (symulacja)
-  createPost: async (newPost: Omit<Post, 'id'>): Promise<Post> => {
-    // W rzeczywistej aplikacji byłoby to żądanie POST
-    // Symulujemy odpowiedź serwera, który nadaje ID i zwraca pełny obiekt posta
-    console.log('Symulacja wysyłania posta:', newPost);
-    const createdPost: Post = {
-      ...newPost,
-      id: Math.floor(Math.random() * 1000) + 100, // Symulowane ID
-      userId: newPost.userId || 1, // Domyślne userId jeśli nie podano
-    };
-    // Symulacja opóźnienia sieciowego
-    await new Promise(resolve => setTimeout(resolve, 500));
-    console.log('Symulacja odpowiedzi serwera:', createdPost);
-    return createdPost;
-  },
 };
