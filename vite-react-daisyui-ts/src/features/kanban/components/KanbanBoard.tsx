@@ -6,7 +6,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  closestCorners,
+  closestCenter,
 } from '@dnd-kit/core';
 import type { DragStartEvent, DragEndEvent, Active, Over } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
@@ -146,11 +146,11 @@ export function KanbanBoard() {
       <h1 className="text-2xl font-bold mb-6">Kanban Board</h1>
       <DndContext
         sensors={sensors}
-        collisionDetection={closestCorners}
+        collisionDetection={closestCenter}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex flex-row gap-8 p-4 overflow-x-auto bg-base-300">
+        <div className="flex flex-col gap-8 p-4 bg-base-300">
           {milestones.map((milestone) => (
             <DroppableContainer
               key={milestone.id}
@@ -188,10 +188,16 @@ export function KanbanBoard() {
         </div>
         <DragOverlay>
           {activeContainer ? (
-            <DroppableContainer id={activeContainer.id} title={activeContainer.title} isOverlay>
-               {items.filter(i => i.containerId === activeContainer.id).map(item => (
-                  <SortableItem key={item.id} id={item.id}>{item.content}</SortableItem>
-               ))}
+            <DroppableContainer
+              id={activeContainer.id}
+              title={activeContainer.title}
+              isOverlay
+            >
+              {items.filter(i => i.containerId === activeContainer.id).map(item => (
+                <SortableItem key={item.id} id={item.id} isOverlay>
+                  {item.content}
+                </SortableItem>
+              ))}
             </DroppableContainer>
           ) : activeItem ? (
             <SortableItem id={activeItem.id} isOverlay>

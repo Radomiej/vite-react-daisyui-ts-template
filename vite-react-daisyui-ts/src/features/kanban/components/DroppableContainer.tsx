@@ -24,19 +24,24 @@ export function DroppableContainer({
     },
   });
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef: sortableSetNodeRef,
-    transform,
-    transition,
-    isDragging,
+  const { 
+    attributes, 
+    listeners, 
+    setNodeRef: sortableSetNodeRef, 
+    transform, 
+    transition, 
+    isDragging 
   } = useSortable({
     id,
     data: {
       type: isMilestone ? 'Milestone' : 'Container',
     },
   });
+
+  const setNodeRef = (node: HTMLElement | null) => {
+    droppableSetNodeRef(node);
+    sortableSetNodeRef(node);
+  };
 
   const style = {
     transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
@@ -46,23 +51,22 @@ export function DroppableContainer({
 
   const containerClasses = `
     flex flex-col rounded-box shadow-md 
-    ${isMilestone ? 'bg-base-300 w-auto p-6' : 'bg-base-200 w-80 p-4'}
+    ${isMilestone ? 'bg-base-300 w-auto p-6 min-h-[10rem]' : 'bg-base-200 w-80 p-4'}
     ${isOverlay ? 'ring-2 ring-primary' : ''}
     ${isOver ? 'ring-2 ring-secondary' : ''}
   `;
 
   return (
     <div
-      ref={sortableSetNodeRef}
+      ref={setNodeRef}
       style={style}
       className={containerClasses}
-      data-testid={`droppable-container-${id}`}
-      {...attributes}
+      data-testid={`container-${id}`}
     >
-      <h2 {...listeners} className="text-lg font-bold mb-4 cursor-grab">
+      <h2 {...attributes} {...listeners} className="text-lg font-bold mb-4 cursor-grab">
         {title}
       </h2>
-      <div ref={droppableSetNodeRef} className="flex flex-col gap-2 flex-grow min-h-[100px]">
+      <div className="flex flex-col gap-2 flex-grow">
         {children}
       </div>
     </div>
