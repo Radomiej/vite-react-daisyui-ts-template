@@ -24,6 +24,7 @@ export const Navbar = () => {
           </Link>
           <Link to="/charts" className="btn btn-ghost flex items-center gap-2">📊 Charts</Link>
           <Link to="/flow" className="btn btn-ghost flex items-center gap-2">🌊 Flow</Link>
+          <Link to="/kanban" className="btn btn-ghost flex items-center gap-2">📋 Kanban</Link>
         </div>
       </div>
       <div className="flex-none">
@@ -55,6 +56,7 @@ export const Navbar = () => {
           <li><Link to="/demo">Demo</Link></li>
           <li><Link to="/charts">Charts</Link></li>
           <li><Link to="/flow">Flow</Link></li>
+          <li><Link to="/kanban">Kanban</Link></li>
         </ul>
       </div>
     </nav>
