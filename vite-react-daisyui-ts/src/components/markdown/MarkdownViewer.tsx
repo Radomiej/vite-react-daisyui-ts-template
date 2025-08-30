@@ -68,8 +68,8 @@ const CodeComponent: React.FC<CodeProps> = ({
 export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, className = '' }) => {
   const components: Components = useMemo(() => ({
     code: (props) => {
-      const { node, className, children, ...rest } = props;
-      const isInline = 'inline' in rest ? (rest as any).inline : false;
+      const { className, children, ...rest } = props;
+      const isInline = 'inline' in rest ? (rest as { inline?: boolean }).inline : false;
       return (
         <CodeComponent inline={isInline} className={className} {...rest}>
           {children}

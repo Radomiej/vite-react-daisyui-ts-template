@@ -164,7 +164,7 @@ test.describe('Kanban Board Basic Features', () => {
       // Wait a bit longer and retry if needed
       try {
         await expect(todoColumn.locator('.card')).toHaveCount(0, { timeout: 10000 });
-      } catch (e) {
+      } catch {
         // Log the current count for debugging
         const remainingCount = await todoColumn.locator('.card').count();
         console.log(`Failed: ${remainingCount} tasks still in the To Do column`);

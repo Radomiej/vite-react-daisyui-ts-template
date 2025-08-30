@@ -14,20 +14,19 @@ export const usePosts = () => {
     queryFn: () => postsApi.getPosts(),
   });
 
-  // Pobierz pojedynczy post
-  const getPost = (id: number) => {
-    return useQuery<Post>({
-      queryKey: ['post', id],
-      queryFn: () => postsApi.getPost(id),
-      enabled: !!id,
-    });
-  };
-
   return {
     posts,
-    getPost,
     isLoading,
     error,
     refetch,
   };
+};
+
+// Hook for getting a single post
+export const usePost = (id: number) => {
+  return useQuery<Post>({
+    queryKey: ['post', id],
+    queryFn: () => postsApi.getPost(id),
+    enabled: !!id,
+  });
 };

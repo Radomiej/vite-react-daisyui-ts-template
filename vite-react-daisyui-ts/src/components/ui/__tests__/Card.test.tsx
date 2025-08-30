@@ -25,7 +25,7 @@ describe('Card', () => {
   });
 
   it('failure: does not render content if falsy', () => {
-    render(<Card>{null as any}</Card>);
+    render(<Card>{null as React.ReactNode}</Card>);
     expect(screen.getByTestId('card').textContent).toBe('');
   });
 });

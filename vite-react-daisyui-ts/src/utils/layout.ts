@@ -51,9 +51,8 @@ const getD3HierarchyLayout = (nodes: Node[], edges: Edge[]) => {
   const layoutedRoot = layout(hierarchyData);
 
   const layoutedNodes: Node[] = layoutedRoot.descendants().map((d: HierarchyNode<Node>) => {
-    const { position, ...rest } = d.data;
     return {
-      ...rest,
+      ...d.data,
       position: { x: d.x ?? 0, y: d.y ?? 0 },
     };
   });
@@ -76,9 +75,8 @@ const getElkLayout = async (nodes: Node[], edges: Edge[]): Promise<{ nodes: Node
   const layoutedGraph = await elk.layout(graph);
   const layoutedNodes: Node[] = layoutedGraph.children?.map((elkNode: ElkNode) => {
     const originalNode = nodes.find(n => n.id === elkNode.id)!;
-    const { position, ...rest } = originalNode;
     return {
-      ...rest,
+      ...originalNode,
       position: { x: elkNode.x ?? 0, y: elkNode.y ?? 0 },
     };
   }) || [];
@@ -91,14 +89,14 @@ const getD3ForceLayout = (nodes: Node[], edges: Edge[]): Promise<{ nodes: Node[]
 
   return new Promise((resolve) => {
     const simulation = forceSimulation(nodes as ForceNode[])
-      .force('link', forceLink(edges).id((d: any) => d.id).distance(150))
+      .force('link', forceLink(edges).id((d) => (d as ForceNode).id).distance(150))
       .force('charge', forceManyBody().strength(-400))
       .stop();
 
     simulation.tick(300);
 
     const layoutedNodes: Node[] = (nodes as ForceNode[]).map(node => {
-      const { x, y, vx, vy, fx, fy, index, position, ...rest } = node;
+      const { x, y, ...rest } = node;
       return {
         ...rest,
         position: { x: x ?? 0, y: y ?? 0 },
