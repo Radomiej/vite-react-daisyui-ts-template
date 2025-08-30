@@ -22,8 +22,11 @@ export const Input = ({
   fullWidth = false,
   leftIcon,
   rightIcon,
+  id,
   ...props
 }: InputProps) => {
+  // Generowanie unikalnego ID dla pola input, jeśli nie zostało podane
+  const inputId = id || `input-${Math.random().toString(36).substring(2, 11)}`;
   const sizeClasses = {
     xs: 'input-xs',
     sm: 'input-sm',
@@ -53,7 +56,7 @@ export const Input = ({
   return (
     <div className={`form-control ${fullWidth ? 'w-full' : ''}`}>
       {label && (
-        <label className="label">
+        <label className="label" htmlFor={inputId}>
           <span className="label-text">{label}</span>
         </label>
       )}
@@ -63,7 +66,7 @@ export const Input = ({
             {leftIcon}
           </div>
         )}
-        <input className={inputClasses} {...props} />
+        <input id={inputId} className={inputClasses} {...props} />
         {rightIcon && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
             {rightIcon}

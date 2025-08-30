@@ -250,7 +250,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({ initialBoard }) => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" data-testid="kanban-board">
       <DndContext
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
@@ -278,7 +278,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({ initialBoard }) => {
             </button>
           </div>
           
-          <div className="flex overflow-x-auto pb-4">
+          <div className="flex overflow-x-auto pb-4" data-testid="columns-count">
             {columns.map(column => (
               <KanbanColumn
                 key={column.id.toString()}

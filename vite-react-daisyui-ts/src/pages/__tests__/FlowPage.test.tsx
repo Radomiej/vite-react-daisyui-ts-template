@@ -5,14 +5,20 @@ import FlowPage from '../FlowPage';
 
 // Mock reactflow
 vi.mock('reactflow', () => ({
-  addEdge: vi.fn((connection, edges) => [...edges, { id: 'new-edge', source: connection.source, target: connection.target }]),
-  applyNodeChanges: vi.fn((changes, nodes) => nodes),
-  applyEdgeChanges: vi.fn((changes, edges) => edges),
+  addEdge: vi.fn((connection: any, edges: any[]) => [...edges, { id: 'new-edge', source: connection.source, target: connection.target }]),
+  applyNodeChanges: vi.fn((changes: any[], nodes: any[]) => nodes),
+  applyEdgeChanges: vi.fn((changes: any[], edges: any[]) => edges),
 }));
 
 // Mock ReactFlowExample component
 vi.mock('../components/flows/ReactFlowExample', () => ({
-  ReactFlowExample: ({ nodes, edges, onNodesChange, onEdgesChange, onConnect }) => (
+  ReactFlowExample: ({ nodes, edges, onNodesChange, onEdgesChange, onConnect }: {
+    nodes: any[];
+    edges: any[];
+    onNodesChange: (changes: any[]) => void;
+    onEdgesChange: (changes: any[]) => void;
+    onConnect: (connection: { source: string; target: string }) => void;
+  }) => (
     <div data-testid="react-flow-example">
       <div data-testid="nodes-count">{nodes.length}</div>
       <div data-testid="edges-count">{edges.length}</div>
@@ -49,7 +55,7 @@ vi.mock('../data/graphData', () => ({
 }));
 
 vi.mock('../utils/layout', () => ({
-  getLayoutedElements: vi.fn().mockImplementation((nodes, edges, layout) => 
+  getLayoutedElements: vi.fn().mockImplementation((nodes: any[], edges: any[], layout: string) => 
     Promise.resolve({ 
       nodes: [...nodes], 
       edges: [...edges] 

@@ -1,9 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-// Zwiększamy timeout dla testów Kanban, które wymagają więcej czasu na operacje drag-and-drop
-test.setTimeout(60000);
-
 test.describe('Kanban Board Sorting and Positioning', () => {
+  // Zwiększamy timeout dla testów Kanban, które wymagają więcej czasu na operacje drag-and-drop
+  test.setTimeout(60000);
   test.beforeEach(async ({ page }) => {
     console.log('Navigating to Kanban page...');
     try {

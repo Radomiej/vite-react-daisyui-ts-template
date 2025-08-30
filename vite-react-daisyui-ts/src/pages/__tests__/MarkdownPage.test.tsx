@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { MarkdownPage } from '../MarkdownPage';
@@ -45,23 +45,31 @@ describe('MarkdownPage', () => {
       text: () => Promise.resolve(mockMarkdownContent)
     });
 
-    render(<MarkdownPage />);
+    await act(async () => {
+      render(<MarkdownPage />);
+    });
     
     // Wait for the content to be loaded
-    await waitFor(() => {
-      // Sprawdzamy, czy komponent MarkdownViewer otrzymał odpowiednią zawartość
-      // Ponieważ MarkdownViewer jest zamockowany, sprawdzamy, czy tekst jest przekazany do komponentu
-      expect(screen.queryByText('Ładowanie...')).not.toBeInTheDocument();
+    await act(async () => {
+      await waitFor(() => {
+        // Sprawdzamy, czy komponent MarkdownViewer otrzymał odpowiednią zawartość
+        // Ponieważ MarkdownViewer jest zamockowany, sprawdzamy, czy tekst jest przekazany do komponentu
+        expect(screen.queryByText('Ładowanie...')).not.toBeInTheDocument();
+      });
     });
   });
 
   it('shows error message when fetch fails', async () => {
     mockFetch.mockRejectedValueOnce(new Error('Failed to fetch'));
 
-    render(<MarkdownPage />);
+    await act(async () => {
+      render(<MarkdownPage />);
+    });
     
-    await waitFor(() => {
-      expect(screen.getByText('Nie udało się załadować pliku markdown.')).toBeInTheDocument();
+    await act(async () => {
+      await waitFor(() => {
+        expect(screen.getByText('Nie udało się załadować pliku markdown.')).toBeInTheDocument();
+      });
     });
   });
 });
