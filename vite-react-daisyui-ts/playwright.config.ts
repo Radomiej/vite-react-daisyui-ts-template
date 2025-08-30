@@ -5,12 +5,6 @@ const isCI = false;
 
 // Konfiguracja dla wielu workerów
 const workerCount = 10; // Minimalna liczba workerów
-const basePort = 8080; // Port bazowy
-
-// Funkcja do generowania portów dla każdego workera
-function getPortForWorker(workerId: number): number {
-  return basePort + workerId;
-}
 
 export default defineConfig({
   // Szukaj testów e2e w katalogach __tests__ z nazwą *.e2e.test.ts
@@ -67,6 +61,6 @@ export default defineConfig({
     timeout: 180000, // Zwiększamy czas oczekiwania na uruchomienie serwera (180 sekund)
   },
   
-  // Uwzględniamy wszystkie testy sortowania i przenoszenia zadań
-  grep: /should reorder tasks within the same column|should move task to the start of another column|should move task to the end of another column|should move task between multiple columns/,
+  // Run all tests
+  // grep: /should reorder tasks within the same column|should move task to the start of another column|should move task to the end of another column|should move task between multiple columns/,
 });

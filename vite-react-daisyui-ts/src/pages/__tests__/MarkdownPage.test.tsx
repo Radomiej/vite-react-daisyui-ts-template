@@ -1,4 +1,4 @@
-import { render, screen, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { MarkdownPage } from '../MarkdownPage';
@@ -16,7 +16,7 @@ describe('MarkdownPage', () => {
     vi.restoreAllMocks();
   });
 
-  it('renders page title correctly', () => {
+  it('renders page title correctly', async () => {
     // Mock successful fetch response
     mockFetch.mockResolvedValueOnce({
       text: () => Promise.resolve('# Test Markdown')
@@ -24,10 +24,12 @@ describe('MarkdownPage', () => {
 
     render(<MarkdownPage />);
     
-    expect(screen.getByRole('heading', { name: /markdown & mermaid demo/i })).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /markdown & mermaid demo/i })).toBeInTheDocument();
+    });
   });
 
-  it('shows loading state initially', () => {
+  it('shows loading state initially', async () => {
     // Delay the fetch response
     mockFetch.mockImplementation(() => new Promise(resolve => setTimeout(() => {
       resolve({ text: () => Promise.resolve('# Content') });
@@ -35,7 +37,9 @@ describe('MarkdownPage', () => {
 
     render(<MarkdownPage />);
     
-    expect(screen.getByText('Ładowanie...')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Ładowanie...')).toBeInTheDocument();
+    });
   });
 
   it('displays markdown content after successful fetch', async () => {
@@ -45,31 +49,23 @@ describe('MarkdownPage', () => {
       text: () => Promise.resolve(mockMarkdownContent)
     });
 
-    await act(async () => {
-      render(<MarkdownPage />);
-    });
+    render(<MarkdownPage />);
     
     // Wait for the content to be loaded
-    await act(async () => {
-      await waitFor(() => {
-        // Sprawdzamy, czy komponent MarkdownViewer otrzymał odpowiednią zawartość
-        // Ponieważ MarkdownViewer jest zamockowany, sprawdzamy, czy tekst jest przekazany do komponentu
-        expect(screen.queryByText('Ładowanie...')).not.toBeInTheDocument();
-      });
+    await waitFor(() => {
+      // Sprawdzamy, czy komponent MarkdownViewer otrzymał odpowiednią zawartość
+      // Ponieważ MarkdownViewer jest zamockowany, sprawdzamy, czy tekst jest przekazany do komponentu
+      expect(screen.queryByText('Ładowanie...')).not.toBeInTheDocument();
     });
   });
 
   it('shows error message when fetch fails', async () => {
     mockFetch.mockRejectedValueOnce(new Error('Failed to fetch'));
 
-    await act(async () => {
-      render(<MarkdownPage />);
-    });
+    render(<MarkdownPage />);
     
-    await act(async () => {
-      await waitFor(() => {
-        expect(screen.getByText('Nie udało się załadować pliku markdown.')).toBeInTheDocument();
-      });
+    await waitFor(() => {
+      expect(screen.getByText('Nie udało się załadować pliku markdown.')).toBeInTheDocument();
     });
   });
 });

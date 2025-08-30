@@ -11,6 +11,32 @@ vi.mock('@dnd-kit/core', () => ({
   PointerSensor: vi.fn(),
   closestCorners: vi.fn(),
   DragOverlay: ({ children }: { children: React.ReactNode }) => <div data-testid="drag-overlay">{children}</div>,
+  useDroppable: () => ({
+    setNodeRef: vi.fn(),
+    isOver: false,
+    active: null
+  }),
+}));
+
+vi.mock('@dnd-kit/sortable', () => ({
+  SortableContext: ({ children }: { children: React.ReactNode }) => <div data-testid="sortable-context">{children}</div>,
+  verticalListSortingStrategy: {},
+  useSortable: () => ({
+    attributes: {},
+    listeners: {},
+    setNodeRef: vi.fn(),
+    transform: { x: 0, y: 0, scaleX: 1, scaleY: 1 },
+    transition: 'transform 0ms ease',
+    isDragging: false
+  }),
+}));
+
+vi.mock('@dnd-kit/utilities', () => ({
+  CSS: {
+    Transform: {
+      toString: vi.fn().mockReturnValue('translate3d(0px, 0px, 0)')
+    }
+  }
 }));
 
 describe('KanbanBoard', () => {

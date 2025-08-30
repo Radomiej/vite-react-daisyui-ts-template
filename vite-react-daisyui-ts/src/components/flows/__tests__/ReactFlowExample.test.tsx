@@ -3,6 +3,29 @@ import '@testing-library/jest-dom';
 import ReactFlowExample from '../ReactFlowExample';
 import type { Node, Edge } from 'reactflow';
 
+// Mock ReactFlow
+vi.mock('reactflow', () => ({
+  __esModule: true,
+  default: ({ nodes, edges }: { nodes: Node[], edges: Edge[] }) => (
+    <div data-testid="react-flow-mock">
+      <div className="nodes">
+        {nodes.map((node) => (
+          <div key={node.id} data-testid={`node-${node.id}`}>
+            {node.data.label}
+          </div>
+        ))}
+      </div>
+      <div className="edges">
+        {edges.map((edge) => (
+          <div key={edge.id} data-testid={`edge-${edge.id}`}>
+            {edge.label}
+          </div>
+        ))}
+      </div>
+    </div>
+  ),
+}));
+
 // Mock ResizeObserver
 class ResizeObserver {
   observe() {}
@@ -47,6 +70,6 @@ describe('ReactFlowExample', () => {
 
   test('renders initial edges', () => {
     render(<ReactFlowExample {...defaultProps} />);
-    expect(screen.getByText('an edge')).toBeInTheDocument();
+    expect(screen.getByTestId('edge-e1-2')).toBeInTheDocument();
   });
 });

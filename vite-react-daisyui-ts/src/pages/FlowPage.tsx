@@ -56,10 +56,14 @@ const FlowPage: React.FC = () => {
   return (
     <div className="flex flex-col h-full">
       <div className="p-4 bg-base-200">
-        <label className="label">
+        <label className="label" htmlFor="layout-select">
           <span className="label-text">Select Layout</span>
         </label>
-        <select className="select select-bordered w-full max-w-xs" value={layout} onChange={handleLayoutChange}>
+        <select 
+          id="layout-select"
+          className="select select-bordered w-full max-w-xs" 
+          value={layout} 
+          onChange={handleLayoutChange}>
           {layoutOptions.map((option) => (
             <option key={option} value={option.toLowerCase()}>
               {option}
