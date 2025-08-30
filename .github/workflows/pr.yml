@@ -1,0 +1,64 @@
+name: Pull Request CI
+
+on:
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-test-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'yarn'
+        cache-dependency-path: vite-react-daisyui-ts/yarn.lock
+
+    - name: Install dependencies
+      run: |
+        cd vite-react-daisyui-ts
+        yarn install --frozen-lockfile
+
+    - name: Run linting
+      run: |
+        cd vite-react-daisyui-ts
+        yarn lint
+
+    - name: Run tests with coverage
+      run: |
+        cd vite-react-daisyui-ts
+        yarn test:coverage
+
+    - name: Build project
+      run: |
+        cd vite-react-daisyui-ts
+        yarn build
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        working-directory: vite-react-daisyui-ts
+        file: coverage/lcov.info
+        fail_ci_if_error: false
+        verbose: true
+
+    - name: Comment coverage report
+      uses: romeovs/lcov-reporter-action@v0.3.1
+      with:
+        lcov-file: vite-react-daisyui-ts/coverage/lcov.info
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        title: "Code Coverage Report"
+
+    - name: Coverage Summary
+      run: |
+        cd vite-react-daisyui-ts
+        echo "## 📊 Coverage Report" >> $GITHUB_STEP_SUMMARY
+        echo "Coverage files generated in coverage/ directory" >> $GITHUB_STEP_SUMMARY
+        if [ -f coverage/coverage-summary.json ]; then
+          echo "Coverage summary available" >> $GITHUB_STEP_SUMMARY
+        fi

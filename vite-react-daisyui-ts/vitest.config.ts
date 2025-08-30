@@ -18,15 +18,29 @@ export default defineConfig({
     ],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'lcov'],
+      reportsDirectory: 'coverage',
       exclude: [
         '**/node_modules/**',
         '**/dist/**',
         '**/coverage/**',
         '**/*.d.ts',
         '**/*.test.{js,ts,jsx,tsx}',
+        '**/*.e2e.test.{js,ts,jsx,tsx}',
         '**/*.stories.{js,ts,jsx,tsx}',
+        '**/test/**',
+        '**/__tests__/**',
       ],
+      include: [
+        'src/**/*.{js,ts,jsx,tsx}'
+      ],
+      all: true,
+      thresholds: {
+        lines: 60,
+        functions: 40,
+        branches: 65,
+        statements: 60
+      }
     },
   },
   resolve: {
