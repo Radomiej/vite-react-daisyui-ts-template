@@ -35,6 +35,13 @@ export const AIAssistant: React.FC = () => {
     }
   };
 
+  const handleUpdateProvider = (oldName: string, newProvider: AIProviderConfig) => {
+    setCustomProviders(prev => prev.map(p => p.name === oldName ? newProvider : p));
+    if (selectedProvider.name === oldName) {
+      setSelectedProvider(newProvider);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full bg-base-100">
       {/* Header */}
@@ -66,6 +73,7 @@ export const AIAssistant: React.FC = () => {
             onSelectProvider={setSelectedProvider}
             onAddProvider={handleAddProvider}
             onRemoveProvider={handleRemoveProvider}
+            onUpdateProvider={handleUpdateProvider}
           />
         </div>
 

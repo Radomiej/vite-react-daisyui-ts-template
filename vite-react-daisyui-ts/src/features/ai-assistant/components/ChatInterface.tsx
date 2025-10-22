@@ -132,11 +132,16 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Chat Header */}
-      <div className="bg-base-200 p-4 border-b border-base-300 flex justify-between items-center">
-        <div>
-          <h3 className="font-semibold">{provider.name}</h3>
-          <p className="text-xs opacity-60">
+      {/* Chat Header - flex-shrink-0 to prevent shrinking */}
+      <div className="bg-base-200 p-4 border-b border-base-300 flex justify-between items-center flex-shrink-0">
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <h3 className="font-semibold">{provider.name}</h3>
+            <span className={`badge badge-sm ${useProduction ? 'badge-error' : 'badge-success'}`}>
+              {useProduction ? '🔴 PRODUCTION' : '🟢 TEST'}
+            </span>
+          </div>
+          <p className="text-xs opacity-60 truncate">
             {useProduction ? provider.productionUrl : provider.testUrl}
           </p>
         </div>
@@ -158,69 +163,71 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
         </div>
       </div>
 
-      {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.length === 0 && (
-          <div className="text-center text-base-content/60 mt-8">
-            <p className="text-lg font-semibold">Welcome to AI Assistant!</p>
-            <p className="text-sm mt-2">
-              Start a conversation or test the connection to {provider.name}
-            </p>
-          </div>
-        )}
-
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`chat ${
-              message.role === 'user'
-                ? 'chat-end'
-                : message.role === 'system'
-                ? 'chat-start'
-                : 'chat-start'
-            }`}
-          >
-            <div className="chat-header">
-              {message.role === 'user' ? 'You' : message.role === 'system' ? 'System' : 'Assistant'}
-              <time className="text-xs opacity-50 ml-2">
-                {message.timestamp.toLocaleTimeString()}
-              </time>
+      {/* Messages Area - flex-1 to grow and fill space, overflow-y-auto for scrolling */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-4 space-y-4">
+          {messages.length === 0 && (
+            <div className="text-center text-base-content/60 mt-8">
+              <p className="text-lg font-semibold">Welcome to AI Assistant!</p>
+              <p className="text-sm mt-2">
+                Start a conversation or test the connection to {provider.name}
+              </p>
             </div>
+          )}
+
+          {messages.map((message) => (
             <div
-              className={`chat-bubble ${
+              key={message.id}
+              className={`chat ${
                 message.role === 'user'
-                  ? 'chat-bubble-primary'
+                  ? 'chat-end'
                   : message.role === 'system'
-                  ? 'chat-bubble-info'
-                  : 'chat-bubble-secondary'
+                  ? 'chat-start'
+                  : 'chat-start'
               }`}
             >
-              {message.content}
+              <div className="chat-header">
+                {message.role === 'user' ? 'You' : message.role === 'system' ? 'System' : 'Assistant'}
+                <time className="text-xs opacity-50 ml-2">
+                  {message.timestamp.toLocaleTimeString()}
+                </time>
+              </div>
+              <div
+                className={`chat-bubble ${
+                  message.role === 'user'
+                    ? 'chat-bubble-primary'
+                    : message.role === 'system'
+                    ? 'chat-bubble-info'
+                    : 'chat-bubble-secondary'
+                }`}
+              >
+                {message.content}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
 
-        {(isLoading || isStreaming) && (
-          <div className="chat chat-start">
-            <div className="chat-bubble chat-bubble-secondary">
-              <span className="loading loading-dots loading-sm"></span>
+          {(isLoading || isStreaming) && (
+            <div className="chat chat-start">
+              <div className="chat-bubble chat-bubble-secondary">
+                <span className="loading loading-dots loading-sm"></span>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {error && (
-          <div className="alert alert-error">
-            <AlertCircle size={20} />
-            <span>{error}</span>
-          </div>
-        )}
+          {error && (
+            <div className="alert alert-error">
+              <AlertCircle size={20} />
+              <span>{error}</span>
+            </div>
+          )}
 
-        <div ref={messagesEndRef} />
+          <div ref={messagesEndRef} />
+        </div>
       </div>
 
-      {/* Input Area */}
-      <div className="bg-base-200 p-4 border-t border-base-300">
-        <div className="flex gap-2">
+      {/* Input Area - Fixed at bottom with flex-shrink-0 to prevent compression */}
+      <div className="bg-base-200 border-t border-base-300 flex-shrink-0">
+        <div className="p-4 flex gap-2">
           <textarea
             ref={textareaRef}
             className="textarea textarea-bordered flex-1 resize-none"
