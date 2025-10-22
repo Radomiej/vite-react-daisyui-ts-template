@@ -1,0 +1,1 @@
+Look into `.windsurf\rules` for rules and guide.

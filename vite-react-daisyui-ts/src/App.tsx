@@ -7,6 +7,8 @@ import { DemoPage } from './pages/DemoPage';
 import { PostsPage } from './pages/PostsPage';
 import { MarkdownPage } from './pages/MarkdownPage';
 import { ChartsPage } from './pages/ChartsPage';
+import FlowPage from './pages/FlowPage';
+import { KanbanPage } from './pages/KanbanPage';
 
 const queryClient = new QueryClient();
 
@@ -24,6 +26,8 @@ function App() {
               <Route path="/posts" element={<PostsPage />} />
               <Route path="/markdown" element={<MarkdownPage />} />
               <Route path="/charts" element={<ChartsPage />} />
+              <Route path="/flow" element={<FlowPage />} />
+              <Route path="/kanban" element={<KanbanPage />} />
             </Routes>
           </main>
           <Footer />

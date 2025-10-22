@@ -15,6 +15,7 @@ A modern React starter template with Vite, TypeScript, Tailwind CSS, and daisyUI
 - 🔥 Hot Module Replacement (HMR)
 - 🔄 [Redux Toolkit](https://redux-toolkit.js.org/) - State management with TypeScript support
 - 🦄 [@tanstack/react-query](https://tanstack.com/query/latest) – Data fetching & caching (v5.80.7)
+- 📋 [@dnd-kit](https://dndkit.com/) - Drag and drop toolkit for building sortable interfaces
 - 🧪 Test frameworks: Vitest, @testing-library/react, @testing-library/jest-dom, @testing-library/user-event, jsdom
 
 ## 🛠️ Tech Stack
@@ -29,6 +30,7 @@ A modern React starter template with Vite, TypeScript, Tailwind CSS, and daisyUI
 - **State Management**: Redux Toolkit 2.2.1
 - **Linting**: ESLint 9.25.0
 - **Data Fetching**: @tanstack/react-query 5.80.7
+- **Drag and Drop**: @dnd-kit/core, @dnd-kit/sortable
 - **Data Visualization**: [Recharts](https://recharts.org/) 2.15.3 - A composable charting library built on React components
 - **Test frameworks**
   - **Vitest** (unit/integration): 3.2.3
@@ -49,9 +51,21 @@ This project uses [Recharts](https://recharts.org/) for creating beautiful and i
 
 All charts are fully responsive and interactive, with tooltips and legends for better data exploration.
 
+## 📋 Kanban Board
+
+This project includes a Trello-like kanban board implementation using [@dnd-kit](https://dndkit.com/), a modular drag and drop toolkit for React. The kanban board features:
+
+- **Multiple Columns**: Organize tasks into different status columns (To Do, In Progress, Done)
+- **Drag and Drop**: Easily move tasks between columns or reorder tasks within a column
+- **Responsive Design**: Works on both desktop and mobile devices
+- **DaisyUI Styling**: Beautiful, consistent styling using DaisyUI components
+
+The kanban board is fully implemented with TypeScript and includes comprehensive unit tests.
+
 ## 🙏 Acknowledgments
 
 - [Recharts](https://recharts.org/) - For providing a composable charting library for React
+- [@dnd-kit](https://dndkit.com/) - For the drag and drop functionality
 - [daisyUI](https://daisyui.com/) - For the beautiful UI components and themes
 - [Tailwind CSS](https://tailwindcss.com/) - For the utility-first CSS framework
 - [Vite](https://vitejs.dev/) - For the fast build tooling
@@ -72,9 +86,16 @@ src/
 │       ├── Input.tsx      # Form input component
 │       └── Modal.tsx      # Modal dialog component
 ├── features/              # Feature-based modules
-│   └── counter/          # Example counter feature
-│       ├── Counter.tsx    # Counter component
-│       └── counterSlice.ts # Counter slice with reducers
+│   ├── counter/          # Example counter feature
+│   │   ├── Counter.tsx    # Counter component
+│   │   └── counterSlice.ts # Counter slice with reducers
+│   └── kanban/           # Kanban board feature
+│       ├── components/    # Kanban components
+│       │   ├── KanbanBoard.tsx    # Main kanban board component
+│       │   ├── DroppableContainer.tsx # Column container component
+│       │   └── SortableItem.tsx  # Draggable task component
+│       ├── types/        # TypeScript types for kanban
+│       └── __tests__/    # Unit tests for kanban components
 ├── hooks/                 # Custom React hooks
 │   └── useTheme.ts        # Theme management hook
 ├── styles/                # Global styles
