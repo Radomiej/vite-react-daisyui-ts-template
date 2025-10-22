@@ -9,6 +9,7 @@ import { MarkdownPage } from './pages/MarkdownPage';
 import { ChartsPage } from './pages/ChartsPage';
 import FlowPage from './pages/FlowPage';
 import KanbanPage from './pages/KanbanPage';
+import AIAssistantPage from './pages/AIAssistantPage';
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ function App() {
               <Route path="/charts" element={<ChartsPage />} />
               <Route path="/flow" element={<FlowPage />} />
               <Route path="/kanban" element={<KanbanPage />} />
+              <Route path="/ai-assistant" element={<AIAssistantPage />} />
             </Routes>
           </main>
           <Footer />
