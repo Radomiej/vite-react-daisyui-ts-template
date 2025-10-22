@@ -5,10 +5,14 @@ A flexible AI chat assistant implementation with support for multiple providers 
 ## Features
 
 - **Multiple Provider Support**: Switch between LiteLLM and N8n providers
+- **Provider Management**: Add, edit, and remove providers with inline forms
 - **Custom Provider Configuration**: Add your own providers with custom URLs and API keys
 - **Test & Production Modes**: Each provider can have separate test and production endpoints
+- **Visual Mode Indicators**: Clear badges showing 🔴 PRODUCTION or 🟢 TEST mode
 - **Streaming Support**: LiteLLM provider supports streaming responses
 - **Session Management**: N8n provider maintains conversation sessions
+- **Fixed Chat Layout**: Proper flexbox layout with input always at bottom
+- **Connection Testing**: Test provider connections before use
 - **Beautiful UI**: Built with DaisyUI components and Tailwind CSS
 - **TypeScript**: Full type safety throughout the codebase
 
@@ -155,19 +159,25 @@ Sidebar component for selecting and managing providers.
 
 **Features:**
 - List all available providers
-- Add new providers
-- Remove providers
+- Add new providers with form
+- Edit existing providers inline
+- Remove providers with confirmation
 - Select active provider
+- Visual feedback for selection (checkmark icon)
 
 ### ChatInterface
 Main chat interface with message display and input.
 
 **Features:**
-- Message history
-- Real-time streaming
+- Message history with chat bubbles
+- Real-time streaming (LiteLLM)
+- Fixed bottom input (proper flexbox layout)
+- Production/Test mode badge in header
 - Connection testing
-- Error handling
-- Auto-scroll
+- Clear chat functionality
+- Error handling with retry
+- Auto-scroll to latest message
+- Loading indicators
 
 ## Types
 
