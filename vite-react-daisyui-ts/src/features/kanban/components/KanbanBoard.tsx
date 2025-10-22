@@ -1,211 +1,307 @@
-import { useState } from 'react';
-import {
-  DndContext,
-  DragOverlay,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  closestCenter,
-} from '@dnd-kit/core';
-import type { DragStartEvent, DragEndEvent, Active, Over } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import type { KanbanState } from '../types';
-import { DroppableContainer } from './DroppableContainer';
-import { SortableItem } from './SortableItem';
+import React, { useState } from 'react';
+import { DndContext, DragOverlay, closestCorners } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent, DragOverEvent, UniqueIdentifier } from '@dnd-kit/core';
+import { arrayMove } from '@dnd-kit/sortable';
+import type { KanbanBoard as KanbanBoardType, KanbanColumn as KanbanColumnType, KanbanTask as KanbanTaskType } from '../types';
+import KanbanColumn from './KanbanColumn';
 
-// New initial data with milestones
-const initialData: KanbanState = {
-  milestones: [
-    { id: 'milestone-1', title: 'Q3 2024' },
-    { id: 'milestone-2', title: 'Q4 2024' },
-    { id: 'milestone-3', title: 'Backlog' },
-  ],
-  containers: [
-    { id: 'todo', title: 'To Do', milestoneId: 'milestone-1' },
-    { id: 'in-progress', title: 'In Progress', milestoneId: 'milestone-1' },
-    { id: 'done', title: 'Done', milestoneId: 'milestone-2' },
-  ],
-  items: [
-    { id: 'task-1', content: 'Research project requirements', containerId: 'todo' },
-    { id: 'task-2', content: 'Create project structure', containerId: 'todo' },
-    { id: 'task-3', content: 'Design UI components', containerId: 'in-progress' },
-    { id: 'task-4', content: 'Implement authentication', containerId: 'in-progress' },
-    { id: 'task-5', content: 'Write documentation', containerId: 'done' },
-  ],
-};
+interface KanbanBoardProps {
+  initialBoard?: KanbanBoardType;
+}
 
-export function KanbanBoard() {
-  const [kanbanState, setKanbanState] = useState<KanbanState>(initialData);
-  const { items, containers, milestones } = kanbanState;
-  const [activeId, setActiveId] = useState<string | null>(null);
-
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
+export const KanbanBoard: React.FC<KanbanBoardProps> = ({ initialBoard }) => {
+  const [columns, setColumns] = useState<KanbanColumnType[]>(
+    initialBoard?.columns || [
+      {
+        id: 'todo',
+        title: 'To Do',
+        tasks: [],
+      },
+      {
+        id: 'in-progress',
+        title: 'In Progress',
+        tasks: [],
+      },
+      {
+        id: 'done',
+        title: 'Done',
+        tasks: [],
+      },
+    ]
   );
+  
+  const [activeTask, setActiveTask] = useState<KanbanTaskType | null>(null);
+  const [newColumnTitle, setNewColumnTitle] = useState('');
 
-  const activeItem = activeId ? items.find((item) => item.id === activeId) : null;
-  const activeContainer = activeId ? containers.find((container) => container.id === activeId) : null;
-
-  function handleDragStart(event: DragStartEvent) {
+  const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
-    setActiveId(active.id as string);
-  }
-
-  function handleDragEnd({ active, over }: DragEndEvent) {
-    if (!over) {
-      setActiveId(null);
-      return;
+    const { id } = active;
+    
+    // Find the task being dragged
+    const draggedTask = findTaskById(id);
+    if (draggedTask) {
+      setActiveTask(draggedTask);
     }
+  };
+  
+  const handleDragOver = (event: DragOverEvent) => {
+    const { active, over } = event;
+    
+    if (!over) return;
+    
+    const activeId = active.id;
+    const overId = over.id;
+    
+    // Find the columns
+    const activeColumnId = active.data?.current?.columnId;
+    const overColumnId = findColumnIdByTaskId(overId) || overId;
+    
+    // If task is dropped in the same column, do nothing during dragOver
+    if (activeColumnId === overColumnId) return;
+    
+    setColumns(prevColumns => {
+      // Find the source and destination columns
+      const activeColumnIndex = prevColumns.findIndex(col => col.id === activeColumnId);
+      const overColumnIndex = prevColumns.findIndex(col => col.id === overColumnId);
+      
+      if (activeColumnIndex === -1 || overColumnIndex === -1) {
+        return prevColumns;
+      }
+      
+      const activeColumn = prevColumns[activeColumnIndex];
+      
+      // Find the task in the source column
+      const taskIndex = activeColumn.tasks.findIndex(task => task.id === activeId);
+      if (taskIndex === -1) {
+        return prevColumns;
+      }
+      
+      // Create a new array of columns
+      const newColumns = [...prevColumns];
+      
+      // Remove the task from the source column
+      const [removedTask] = newColumns[activeColumnIndex].tasks.splice(taskIndex, 1);
+      
+      // Add the task to the destination column
+      // If the over item is a column, add to the end
+      if (over.data?.current?.type === 'column') {
+        newColumns[overColumnIndex].tasks.push(removedTask);
+      } else {
+        // If the over item is a task, find its index and insert before it
+        const overTaskIndex = newColumns[overColumnIndex].tasks.findIndex(
+          task => task.id === overId
+        );
+        
+        if (overTaskIndex !== -1) {
+          newColumns[overColumnIndex].tasks.splice(overTaskIndex, 0, removedTask);
+        } else {
+          // Fallback: add to the end
+          newColumns[overColumnIndex].tasks.push(removedTask);
+        }
+      }
+      
+      return newColumns;
+    });
+  };
 
-    if (active.id === over.id) {
-      setActiveId(null);
-      return;
-    }
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    // Reset active states
+    setActiveTask(null);
+    
+    if (!over) return;
 
-    const activeIsContainer = active.data.current?.type === 'Container';
-
-    if (activeIsContainer) {
-      handleContainerDragEnd(active, over);
+    const activeId = active.id;
+    const overId = over.id;
+    
+    // Find the columns
+    const activeColumnId = active.data?.current?.columnId;
+    const overColumnId = findColumnIdByTaskId(overId) || overId;
+    
+    // If task is dropped in the same column, handle reordering
+    if (activeColumnId === overColumnId) {
+      // Same column reordering
+      setColumns(prevColumns => {
+        const columnIndex = prevColumns.findIndex(col => col.id === activeColumnId);
+        if (columnIndex === -1) return prevColumns;
+        
+        const column = prevColumns[columnIndex];
+        const activeIndex = column.tasks.findIndex(task => task.id === activeId);
+        const overIndex = column.tasks.findIndex(task => task.id === overId);
+        
+        if (activeIndex === -1 || overIndex === -1) return prevColumns;
+        
+        // Create new columns array
+        const newColumns = [...prevColumns];
+        
+        // Create new tasks array with reordered tasks
+        newColumns[columnIndex] = {
+          ...column,
+          tasks: arrayMove(column.tasks, activeIndex, overIndex)
+        };
+        
+        return newColumns;
+      });
     } else {
-      handleItemDragEnd(active, over);
+      // Cross-column movement
+      setColumns(prevColumns => {
+        // Find the source and destination columns
+        const activeColumnIndex = prevColumns.findIndex(col => col.id === activeColumnId);
+        const overColumnIndex = prevColumns.findIndex(col => col.id === overColumnId);
+        
+        if (activeColumnIndex === -1 || overColumnIndex === -1) {
+          return prevColumns;
+        }
+        
+        const activeColumn = prevColumns[activeColumnIndex];
+        const overColumn = prevColumns[overColumnIndex];
+        
+        // Find the task in the source column
+        const taskIndex = activeColumn.tasks.findIndex(task => task.id === activeId);
+        if (taskIndex === -1) {
+          return prevColumns;
+        }
+        
+        // Create a new array of columns
+        const newColumns = [...prevColumns];
+        
+        // Remove the task from the source column
+        const [removedTask] = newColumns[activeColumnIndex].tasks.splice(taskIndex, 1);
+        
+        // Determine where to insert the task in the destination column
+        if (overId === overColumnId) {
+          // Dropped directly on the column - add to the end
+          newColumns[overColumnIndex].tasks.push(removedTask);
+        } else {
+          // Dropped on a task - find its position and insert there
+          const overTaskIndex = overColumn.tasks.findIndex(task => task.id === overId);
+          
+          if (overTaskIndex !== -1) {
+            // Insert at the specific position
+            newColumns[overColumnIndex].tasks.splice(overTaskIndex, 0, removedTask);
+          } else {
+            // Fallback - add to the end
+            newColumns[overColumnIndex].tasks.push(removedTask);
+          }
+        }
+        
+        return newColumns;
+      });
     }
+  };
 
-    setActiveId(null);
-  }
-
-  function handleContainerDragEnd(active: Active, over: Over) {
-    const activeId = active.id as string;
-    const overId = over.id as string;
-
-    if (activeId === overId) return;
-
-    const activeContainerIndex = containers.findIndex((c) => c.id === activeId);
-
-    // Determine the target milestone and index
-    let overMilestoneId: string | undefined;
-    let overContainerIndex: number;
-
-    if (over.data.current?.type === 'Container') {
-      overContainerIndex = containers.findIndex((c) => c.id === overId);
-      if (overContainerIndex === -1) return;
-      overMilestoneId = containers[overContainerIndex].milestoneId;
-    } else if (over.data.current?.type === 'Milestone') {
-      overMilestoneId = overId;
-      // Find the last container in the target milestone to drop after it
-      const lastContainerInMilestone = [...containers].reverse().find(c => c.milestoneId === overMilestoneId);
-      overContainerIndex = lastContainerInMilestone ? containers.indexOf(lastContainerInMilestone) + 1 : activeContainerIndex;
-    } else {
-      return; // Not a valid drop target
+  const findTaskById = (id: UniqueIdentifier): KanbanTaskType | null => {
+    for (const column of columns) {
+      const task = column.tasks.find(task => task.id === id);
+      if (task) {
+        return task;
+      }
     }
+    return null;
+  };
 
-    setKanbanState((prev) => {
-      const newContainers = [...prev.containers];
-      // Update the milestone ID of the dragged container
-      newContainers[activeContainerIndex].milestoneId = overMilestoneId;
+  const findColumnIdByTaskId = (taskId: UniqueIdentifier): UniqueIdentifier | null => {
+    for (const column of columns) {
+      const taskExists = column.tasks.some(task => task.id === taskId);
+      if (taskExists) {
+        return column.id;
+      }
+    }
+    return null;
+  };
 
-      // Reorder the containers array
-      return {
-        ...prev,
-        containers: arrayMove(newContainers, activeContainerIndex, overContainerIndex),
+  const handleAddTask = (columnId: string | number, taskTitle: string) => {
+    setColumns(prevColumns => {
+      const columnIndex = prevColumns.findIndex(col => col.id === columnId);
+      if (columnIndex === -1) {
+        return prevColumns;
+      }
+      
+      const newColumns = [...prevColumns];
+      const newTask: KanbanTaskType = {
+        id: `task-${Date.now()}`,
+        title: taskTitle,
+        createdAt: new Date(),
       };
+      
+      newColumns[columnIndex].tasks.push(newTask);
+      return newColumns;
     });
-  }
+  };
 
-  function handleItemDragEnd(active: Active, over: Over) {
-    const activeItemId = active.id as string;
-    const overId = over.id as string;
-    
-    const activeIndex = items.findIndex(item => item.id === activeItemId);
-    const overIsContainer = over.data.current?.type === 'Container';
-    
-    let newContainerId: string;
-    let overIndex: number;
-
-    if (overIsContainer) {
-      newContainerId = overId;
-      overIndex = items.filter(i => i.containerId === newContainerId).length;
-    } else {
-      const overItemIndex = items.findIndex(item => item.id === overId);
-      newContainerId = items[overItemIndex].containerId;
-      overIndex = overItemIndex;
+  const handleAddColumn = () => {
+    if (newColumnTitle.trim()) {
+      const newColumn: KanbanColumnType = {
+        id: `column-${Date.now()}`,
+        title: newColumnTitle.trim(),
+        tasks: [],
+      };
+      
+      setColumns(prevColumns => [...prevColumns, newColumn]);
+      setNewColumnTitle('');
     }
+  };
 
-    setKanbanState(prev => {
-      const newItems = [...prev.items];
-      newItems[activeIndex] = { ...newItems[activeIndex], containerId: newContainerId };
-      return { ...prev, items: arrayMove(newItems, activeIndex, overIndex) };
-    });
-  }
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleAddColumn();
+    }
+  };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Kanban Board</h1>
+    <div className="flex flex-col" data-testid="kanban-board">
       <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
         onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
+        collisionDetection={closestCorners}
       >
-        <div className="flex flex-col gap-8 p-4 bg-base-300">
-          {milestones.map((milestone) => (
-            <DroppableContainer
-              key={milestone.id}
-              id={milestone.id}
-              title={milestone.title}
-              isMilestone
-
+        <div className="p-4">
+          <h1 className="text-2xl font-bold mb-6">Kanban Board</h1>
+          
+          <div className="flex mb-6">
+            <input
+              type="text"
+              placeholder="Add new column..."
+              className="input input-bordered w-64"
+              value={newColumnTitle}
+              onChange={(e) => setNewColumnTitle(e.target.value)}
+              onKeyPress={handleKeyPress}
+            />
+            <button 
+              className="btn btn-primary ml-2" 
+              onClick={handleAddColumn}
+              disabled={!newColumnTitle.trim()}
             >
-              <SortableContext items={containers.filter(c => c.milestoneId === milestone.id).map(c => c.id)}>
-                <div className="flex flex-col md:flex-row gap-4">
-                  {containers
-                    .filter((c) => c.milestoneId === milestone.id)
-                    .map((container) => (
-                      <DroppableContainer
-                        key={container.id}
-                        id={container.id}
-                        title={container.title}
-
-                      >
-                        <SortableContext items={items.filter(item => item.containerId === container.id).map(i => i.id)}>
-                          {items
-                            .filter((item) => item.containerId === container.id)
-                            .map((item) => (
-                              <SortableItem key={item.id} id={item.id}>
-                                {item.content}
-                              </SortableItem>
-                            ))}
-                        </SortableContext>
-                      </DroppableContainer>
-                    ))}
+              Add Column
+            </button>
+          </div>
+          
+          <div className="flex overflow-x-auto pb-4" data-testid="columns-count">
+            {columns.map(column => (
+              <KanbanColumn
+                key={column.id.toString()}
+                column={column}
+                onAddTask={handleAddTask}
+              />
+            ))}
+          </div>
+          
+          <DragOverlay>
+            {activeTask ? (
+              <div className="card bg-base-100 shadow-xl w-72 opacity-80">
+                <div className="card-body">
+                  <h3 className="card-title">{activeTask.title}</h3>
+                  {activeTask.description && <p>{activeTask.description}</p>}
                 </div>
-              </SortableContext>
-            </DroppableContainer>
-          ))}
+              </div>
+            ) : null}
+          </DragOverlay>
         </div>
-        <DragOverlay>
-          {activeContainer ? (
-            <DroppableContainer
-              id={activeContainer.id}
-              title={activeContainer.title}
-              isOverlay
-            >
-              {items.filter(i => i.containerId === activeContainer.id).map(item => (
-                <SortableItem key={item.id} id={item.id} isOverlay>
-                  {item.content}
-                </SortableItem>
-              ))}
-            </DroppableContainer>
-          ) : activeItem ? (
-            <SortableItem id={activeItem.id} isOverlay>
-              {activeItem.content}
-            </SortableItem>
-          ) : null}
-        </DragOverlay>
       </DndContext>
     </div>
   );
-}
+};
+
+export default KanbanBoard;

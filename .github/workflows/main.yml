@@ -1,0 +1,50 @@
+name: Main Branch CI
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+        cache-dependency-path: vite-react-daisyui-ts/yarn.lock
+
+    - name: Install dependencies
+      run: |
+        cd vite-react-daisyui-ts
+        yarn install --frozen-lockfile
+
+    - name: Run linting
+      run: |
+        cd vite-react-daisyui-ts
+        yarn lint
+
+    - name: Run tests
+      run: |
+        cd vite-react-daisyui-ts
+        yarn test
+
+    - name: Build project
+      run: |
+        cd vite-react-daisyui-ts
+        yarn build
+
+    - name: Check build artifacts
+      run: |
+        cd vite-react-daisyui-ts
+        ls -la dist/
+        echo "Build completed successfully ✅"
