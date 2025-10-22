@@ -26,6 +26,7 @@ export const Navbar = () => {
           <Link to="/flow" className="btn btn-ghost flex items-center gap-2">🌊 Flow</Link>
           <Link to="/kanban" className="btn btn-ghost flex items-center gap-2">📋 Kanban</Link>
           <Link to="/ai-assistant" className="btn btn-ghost flex items-center gap-2">🤖 AI Assistant</Link>
+          <Link to="/terminal" className="btn btn-ghost flex items-center gap-2">🖥️ Terminal</Link>
         </div>
       </div>
       <div className="flex-none">
@@ -59,6 +60,7 @@ export const Navbar = () => {
           <li><Link to="/flow">Flow</Link></li>
           <li><Link to="/kanban">Kanban</Link></li>
           <li><Link to="/ai-assistant">AI Assistant</Link></li>
+          <li><Link to="/terminal">Terminal</Link></li>
         </ul>
       </div>
     </nav>

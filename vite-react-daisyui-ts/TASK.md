@@ -21,6 +21,21 @@
 - Need to use `className.contains()` instead of `toHaveClass()` for class checks
 - There's an unrelated failing test in ReactFlowExample.test.tsx that should be fixed separately
 
+## Current Tasks
+
+### Implement Tauri Desktop App (2025-10-22)
+
+- [x] Install Tauri CLI and dependencies
+- [x] Configure Tauri for the project
+- [x] Create Tauri backend with CMD command execution capability
+- [x] Create Terminal React component with CMD/PowerShell support
+- [x] Add Terminal page to routing and navigation
+- [x] Create unit tests for Terminal component
+- [x] Add documentation for desktop app usage (TAURI_SETUP.md)
+- [ ] Install Rust toolchain (user prerequisite - requires manual installation)
+- [ ] Test desktop app build (requires Rust installation)
+- [ ] Create unit tests for Rust commands (requires Rust installation)
+
 ## Future Enhancements
 
 - [ ] Add ability to create new tasks

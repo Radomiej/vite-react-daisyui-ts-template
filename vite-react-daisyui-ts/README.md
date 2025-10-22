@@ -16,6 +16,7 @@ A modern React starter template with Vite, TypeScript, Tailwind CSS, and daisyUI
 - 🔄 [Redux Toolkit](https://redux-toolkit.js.org/) - State management with TypeScript support
 - 🦄 [@tanstack/react-query](https://tanstack.com/query/latest) – Data fetching & caching (v5.80.7)
 - 📋 [@dnd-kit](https://dndkit.com/) - Drag and drop toolkit for building sortable interfaces
+- 🖥️ [Tauri](https://tauri.app/) - Desktop app framework (optional - requires Rust)
 - 🧪 Test frameworks: Vitest, @testing-library/react, @testing-library/jest-dom, @testing-library/user-event, jsdom
 
 ## 🛠️ Tech Stack
@@ -62,10 +63,40 @@ This project includes a Trello-like kanban board implementation using [@dnd-kit]
 
 The kanban board is fully implemented with TypeScript and includes comprehensive unit tests.
 
+## 🖥️ Desktop App (Tauri)
+
+This project can be built as a native Windows desktop application using [Tauri](https://tauri.app/). The desktop version includes:
+
+- **Native Performance**: Uses WebView2 on Windows for better performance than Electron
+- **Small Bundle Size**: ~3 MB vs 80-120 MB (Electron)
+- **Terminal Integration**: Execute CMD and PowerShell commands directly from the app
+- **System Access**: Secure native system integration via Rust backend
+
+### Prerequisites for Desktop Build
+
+**IMPORTANT**: To build the desktop app, you need:
+1. **Rust** - Download from [rustup.rs](https://rustup.rs/)
+2. **Visual Studio C++ Build Tools** - Required for Windows compilation
+
+### Desktop Development
+
+```bash
+# Run desktop app in development mode
+yarn tauri dev
+
+# Build desktop app for production
+yarn tauri build
+```
+
+For detailed setup instructions, see [doc/TAURI_SETUP.md](doc/TAURI_SETUP.md).
+
+**Note**: The web version works without Rust. Tauri is only required for the desktop build.
+
 ## 🙏 Acknowledgments
 
 - [Recharts](https://recharts.org/) - For providing a composable charting library for React
 - [@dnd-kit](https://dndkit.com/) - For the drag and drop functionality
+- [Tauri](https://tauri.app/) - For the desktop app framework
 - [daisyUI](https://daisyui.com/) - For the beautiful UI components and themes
 - [Tailwind CSS](https://tailwindcss.com/) - For the utility-first CSS framework
 - [Vite](https://vitejs.dev/) - For the fast build tooling

@@ -10,6 +10,7 @@ import { ChartsPage } from './pages/ChartsPage';
 import FlowPage from './pages/FlowPage';
 import KanbanPage from './pages/KanbanPage';
 import AIAssistantPage from './pages/AIAssistantPage';
+import TerminalPage from './pages/TerminalPage';
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ function App() {
               <Route path="/flow" element={<FlowPage />} />
               <Route path="/kanban" element={<KanbanPage />} />
               <Route path="/ai-assistant" element={<AIAssistantPage />} />
+              <Route path="/terminal" element={<TerminalPage />} />
             </Routes>
           </main>
           <Footer />
