@@ -36,6 +36,22 @@
 - [ ] Test desktop app build (requires Rust installation)
 - [ ] Create unit tests for Rust commands (requires Rust installation)
 
+### Implement Multiple Views Feature (2025-10-24)
+
+- [x] Create new branch `features/multiple-views`
+- [x] Design feature architecture with iframe-based view isolation
+- [x] Create MultiViewGrid main component with state management
+- [x] Create ViewContainer component for individual views
+- [x] Create ControlPanel component with input, sliders, and buttons
+- [x] Create DebugPanel component for view inspection
+- [x] Define TypeScript types for views and components
+- [x] Add routing and navigation integration
+- [x] Create comprehensive unit tests
+- [x] Add feature documentation (README.md)
+- [ ] Test with actual URLs and applications
+- [ ] Optimize performance for multiple views
+- [ ] Add localStorage persistence for view configurations
+
 ## Future Enhancements
 
 - [ ] Add ability to create new tasks

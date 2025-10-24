@@ -11,6 +11,7 @@ import FlowPage from './pages/FlowPage';
 import KanbanPage from './pages/KanbanPage';
 import AIAssistantPage from './pages/AIAssistantPage';
 import TerminalPage from './pages/TerminalPage';
+import MultipleViewsPage from './pages/MultipleViewsPage';
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ function App() {
               <Route path="/kanban" element={<KanbanPage />} />
               <Route path="/ai-assistant" element={<AIAssistantPage />} />
               <Route path="/terminal" element={<TerminalPage />} />
+              <Route path="/multiple-views" element={<MultipleViewsPage />} />
             </Routes>
           </main>
           <Footer />

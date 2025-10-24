@@ -17,6 +17,7 @@ A modern React starter template with Vite, TypeScript, Tailwind CSS, and daisyUI
 - 🦄 [@tanstack/react-query](https://tanstack.com/query/latest) – Data fetching & caching (v5.80.7)
 - 📋 [@dnd-kit](https://dndkit.com/) - Drag and drop toolkit for building sortable interfaces
 - 🖥️ [Tauri](https://tauri.app/) - Desktop app framework (optional - requires Rust)
+- 🎮 **Multiple Views** - Display multiple isolated views/applications in a responsive grid layout
 - 🧪 Test frameworks: Vitest, @testing-library/react, @testing-library/jest-dom, @testing-library/user-event, jsdom
 
 ## 🛠️ Tech Stack
@@ -120,19 +121,68 @@ src/
 │   ├── counter/          # Example counter feature
 │   │   ├── Counter.tsx    # Counter component
 │   │   └── counterSlice.ts # Counter slice with reducers
-│   └── kanban/           # Kanban board feature
-│       ├── components/    # Kanban components
-│       │   ├── KanbanBoard.tsx    # Main kanban board component
-│       │   ├── DroppableContainer.tsx # Column container component
-│       │   └── SortableItem.tsx  # Draggable task component
-│       ├── types/        # TypeScript types for kanban
-│       └── __tests__/    # Unit tests for kanban components
+│   ├── kanban/           # Kanban board feature
+│   │   ├── components/    # Kanban components
+│   │   │   ├── KanbanBoard.tsx    # Main kanban board component
+│   │   │   ├── DroppableContainer.tsx # Column container component
+│   │   │   └── SortableItem.tsx  # Draggable task component
+│   │   ├── types/        # TypeScript types for kanban
+│   │   └── __tests__/    # Unit tests for kanban components
+│   └── multiple-views/   # Multiple views feature (NEW)
+│       ├── components/    # View components
+│       │   ├── ViewContainer.tsx  # Individual view container
+│       │   ├── ControlPanel.tsx   # Control panel with inputs
+│       │   └── DebugPanel.tsx     # Debug panel for inspection
+│       ├── types/        # TypeScript types for views
+│       ├── __tests__/    # Unit tests
+│       └── README.md     # Feature documentation
 ├── hooks/                 # Custom React hooks
 │   └── useTheme.ts        # Theme management hook
 ├── styles/                # Global styles
 │   └── index.css          # Tailwind and daisyUI imports
 └── utils/                 # Utility functions
 ```
+
+## 🎮 Multiple Views Feature
+
+The Multiple Views feature allows you to display multiple isolated views/applications simultaneously in a responsive grid layout. Perfect for:
+
+- **Multiplayer Testing**: Run multiple instances of the same application
+- **Phaser Games**: Test multiple game instances side-by-side
+- **React Applications**: Isolated React app instances
+- **Development**: Debug and test multiple views at once
+
+### Quick Start
+
+Navigate to `/multiple-views` to access the feature. Then:
+
+1. Enter a URL or relative path (e.g., `https://example.com` or `/demo`)
+2. Adjust the number of views (1-12) using the slider
+3. Click "Run" to create the views
+4. Adjust grid columns (1-4) to change the layout
+5. Use individual view controls to reload, duplicate, or remove views
+
+### Features
+
+- **Isolated iframe containers** - Each view runs in its own sandbox
+- **Responsive grid layout** - Dynamically adjust columns and view count
+- **Debug panel** - Inspect view data and copy JSON
+- **View controls** - Reload, duplicate, remove, or open in new tab
+- **Performance optimized** - Handles up to 12 views efficiently
+
+### Example Usage
+
+```tsx
+import { MultiViewGrid } from '@/features/multiple-views';
+
+export const MyPage = () => {
+  return <MultiViewGrid />;
+};
+```
+
+For detailed documentation, see [`src/features/multiple-views/README.md`](./src/features/multiple-views/README.md)
+
+---
 
 ## Using Redux
 
