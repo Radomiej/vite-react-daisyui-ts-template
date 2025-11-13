@@ -23,6 +23,11 @@ export const Navbar = () => {
             <span className="w-4 h-4 text-center">M↓</span> Markdown
           </Link>
           <Link to="/charts" className="btn btn-ghost flex items-center gap-2">📊 Charts</Link>
+          <Link to="/flow" className="btn btn-ghost flex items-center gap-2">🌊 Flow</Link>
+          <Link to="/kanban" className="btn btn-ghost flex items-center gap-2">📋 Kanban</Link>
+          <Link to="/ai-assistant" className="btn btn-ghost flex items-center gap-2">🤖 AI Assistant</Link>
+          <Link to="/terminal" className="btn btn-ghost flex items-center gap-2">🖥️ Terminal</Link>
+          <Link to="/multiple-views" className="btn btn-ghost flex items-center gap-2">🎮 Multi-Views</Link>
         </div>
       </div>
       <div className="flex-none">
@@ -52,7 +57,12 @@ export const Navbar = () => {
         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
           <li><Link to="/posts">Posts</Link></li>
           <li><Link to="/demo">Demo</Link></li>
-          <li><Link to="/charts">📊 Charts</Link></li>
+          <li><Link to="/charts">Charts</Link></li>
+          <li><Link to="/flow">Flow</Link></li>
+          <li><Link to="/kanban">Kanban</Link></li>
+          <li><Link to="/ai-assistant">AI Assistant</Link></li>
+          <li><Link to="/terminal">Terminal</Link></li>
+          <li><Link to="/multiple-views">Multi-Views</Link></li>
         </ul>
       </div>
     </nav>

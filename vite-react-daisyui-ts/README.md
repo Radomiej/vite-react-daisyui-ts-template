@@ -15,6 +15,9 @@ A modern React starter template with Vite, TypeScript, Tailwind CSS, and daisyUI
 - 🔥 Hot Module Replacement (HMR)
 - 🔄 [Redux Toolkit](https://redux-toolkit.js.org/) - State management with TypeScript support
 - 🦄 [@tanstack/react-query](https://tanstack.com/query/latest) – Data fetching & caching (v5.80.7)
+- 📋 [@dnd-kit](https://dndkit.com/) - Drag and drop toolkit for building sortable interfaces
+- 🖥️ [Tauri](https://tauri.app/) - Desktop app framework (optional - requires Rust)
+- 🎮 **Multiple Views** - Display multiple isolated views/applications in a responsive grid layout
 - 🧪 Test frameworks: Vitest, @testing-library/react, @testing-library/jest-dom, @testing-library/user-event, jsdom
 
 ## 🛠️ Tech Stack
@@ -29,6 +32,7 @@ A modern React starter template with Vite, TypeScript, Tailwind CSS, and daisyUI
 - **State Management**: Redux Toolkit 2.2.1
 - **Linting**: ESLint 9.25.0
 - **Data Fetching**: @tanstack/react-query 5.80.7
+- **Drag and Drop**: @dnd-kit/core, @dnd-kit/sortable
 - **Data Visualization**: [Recharts](https://recharts.org/) 2.15.3 - A composable charting library built on React components
 - **Test frameworks**
   - **Vitest** (unit/integration): 3.2.3
@@ -49,9 +53,51 @@ This project uses [Recharts](https://recharts.org/) for creating beautiful and i
 
 All charts are fully responsive and interactive, with tooltips and legends for better data exploration.
 
+## 📋 Kanban Board
+
+This project includes a Trello-like kanban board implementation using [@dnd-kit](https://dndkit.com/), a modular drag and drop toolkit for React. The kanban board features:
+
+- **Multiple Columns**: Organize tasks into different status columns (To Do, In Progress, Done)
+- **Drag and Drop**: Easily move tasks between columns or reorder tasks within a column
+- **Responsive Design**: Works on both desktop and mobile devices
+- **DaisyUI Styling**: Beautiful, consistent styling using DaisyUI components
+
+The kanban board is fully implemented with TypeScript and includes comprehensive unit tests.
+
+## 🖥️ Desktop App (Tauri)
+
+This project can be built as a native Windows desktop application using [Tauri](https://tauri.app/). The desktop version includes:
+
+- **Native Performance**: Uses WebView2 on Windows for better performance than Electron
+- **Small Bundle Size**: ~3 MB vs 80-120 MB (Electron)
+- **Terminal Integration**: Execute CMD and PowerShell commands directly from the app
+- **System Access**: Secure native system integration via Rust backend
+
+### Prerequisites for Desktop Build
+
+**IMPORTANT**: To build the desktop app, you need:
+1. **Rust** - Download from [rustup.rs](https://rustup.rs/)
+2. **Visual Studio C++ Build Tools** - Required for Windows compilation
+
+### Desktop Development
+
+```bash
+# Run desktop app in development mode
+yarn tauri dev
+
+# Build desktop app for production
+yarn tauri build
+```
+
+For detailed setup instructions, see [doc/TAURI_SETUP.md](doc/TAURI_SETUP.md).
+
+**Note**: The web version works without Rust. Tauri is only required for the desktop build.
+
 ## 🙏 Acknowledgments
 
 - [Recharts](https://recharts.org/) - For providing a composable charting library for React
+- [@dnd-kit](https://dndkit.com/) - For the drag and drop functionality
+- [Tauri](https://tauri.app/) - For the desktop app framework
 - [daisyUI](https://daisyui.com/) - For the beautiful UI components and themes
 - [Tailwind CSS](https://tailwindcss.com/) - For the utility-first CSS framework
 - [Vite](https://vitejs.dev/) - For the fast build tooling
@@ -72,15 +118,71 @@ src/
 │       ├── Input.tsx      # Form input component
 │       └── Modal.tsx      # Modal dialog component
 ├── features/              # Feature-based modules
-│   └── counter/          # Example counter feature
-│       ├── Counter.tsx    # Counter component
-│       └── counterSlice.ts # Counter slice with reducers
+│   ├── counter/          # Example counter feature
+│   │   ├── Counter.tsx    # Counter component
+│   │   └── counterSlice.ts # Counter slice with reducers
+│   ├── kanban/           # Kanban board feature
+│   │   ├── components/    # Kanban components
+│   │   │   ├── KanbanBoard.tsx    # Main kanban board component
+│   │   │   ├── DroppableContainer.tsx # Column container component
+│   │   │   └── SortableItem.tsx  # Draggable task component
+│   │   ├── types/        # TypeScript types for kanban
+│   │   └── __tests__/    # Unit tests for kanban components
+│   └── multiple-views/   # Multiple views feature (NEW)
+│       ├── components/    # View components
+│       │   ├── ViewContainer.tsx  # Individual view container
+│       │   ├── ControlPanel.tsx   # Control panel with inputs
+│       │   └── DebugPanel.tsx     # Debug panel for inspection
+│       ├── types/        # TypeScript types for views
+│       ├── __tests__/    # Unit tests
+│       └── README.md     # Feature documentation
 ├── hooks/                 # Custom React hooks
 │   └── useTheme.ts        # Theme management hook
 ├── styles/                # Global styles
 │   └── index.css          # Tailwind and daisyUI imports
 └── utils/                 # Utility functions
 ```
+
+## 🎮 Multiple Views Feature
+
+The Multiple Views feature allows you to display multiple isolated views/applications simultaneously in a responsive grid layout. Perfect for:
+
+- **Multiplayer Testing**: Run multiple instances of the same application
+- **Phaser Games**: Test multiple game instances side-by-side
+- **React Applications**: Isolated React app instances
+- **Development**: Debug and test multiple views at once
+
+### Quick Start
+
+Navigate to `/multiple-views` to access the feature. Then:
+
+1. Enter a URL or relative path (e.g., `https://example.com` or `/demo`)
+2. Adjust the number of views (1-12) using the slider
+3. Click "Run" to create the views
+4. Adjust grid columns (1-4) to change the layout
+5. Use individual view controls to reload, duplicate, or remove views
+
+### Features
+
+- **Isolated iframe containers** - Each view runs in its own sandbox
+- **Responsive grid layout** - Dynamically adjust columns and view count
+- **Debug panel** - Inspect view data and copy JSON
+- **View controls** - Reload, duplicate, remove, or open in new tab
+- **Performance optimized** - Handles up to 12 views efficiently
+
+### Example Usage
+
+```tsx
+import { MultiViewGrid } from '@/features/multiple-views';
+
+export const MyPage = () => {
+  return <MultiViewGrid />;
+};
+```
+
+For detailed documentation, see [`src/features/multiple-views/README.md`](./src/features/multiple-views/README.md)
+
+---
 
 ## Using Redux
 

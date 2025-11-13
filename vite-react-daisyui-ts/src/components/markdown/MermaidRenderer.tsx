@@ -36,17 +36,17 @@ export const MermaidRenderer = ({ chart }: MermaidRendererProps) => {
   }, []);
 
   useEffect(() => {
-    if (!chart) return;
-    
     let cancelled = false;
     
     const processChart = async () => {
+      if (!chart) return;
+      
       try {
         const result = await renderMermaid(chart);
         if (!cancelled) {
           setSvg(result);
         }
-      } catch (err) {
+      } catch {
         if (!cancelled) {
           setError('Error rendering diagram');
         }
@@ -60,14 +60,14 @@ export const MermaidRenderer = ({ chart }: MermaidRendererProps) => {
     };
   }, [chart, renderMermaid]);
 
-  if (error) return <div className="text-error p-4 rounded-lg bg-error/10">{error}</div>;
-  
   // Use a ref to set the innerHTML after the component mounts/updates
   useEffect(() => {
     if (ref.current && svg) {
       ref.current.innerHTML = svg;
     }
   }, [svg]);
+
+  if (error) return <div className="text-error p-4 rounded-lg bg-error/10">{error}</div>;
   
   return (
     <div className="mermaid-container my-6 w-full overflow-auto">
